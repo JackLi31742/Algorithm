@@ -11,6 +11,75 @@ import java.util.Map;
 import java.util.Set;
 
 public class Solution {
+	
+	/**
+	 * Rotate Matrix
+	 * You are given an n x n 2D matrix representing an image.
+
+		Rotate the image by 90 degrees (clockwise).
+		In the first loop, only the outer side of matrix will be scanned. Inner loop will not.
+Four Points/Values on each side of the matrix are scanned at the same time.
+The loop will only loop along the upper side of the matrix.(Attention: the upper-right corner is one exception.)
+If the length of matrix is n, the loop will scanned from matrix[0][0] to matrix[0][n-1-1].
+If outer side has been scanner, i = i+1, then j = i.
+The maximum of j is hard to understand. But because we scanned the array symmetrically,
+If the minimum of j is i, the maximum value should also n-i - c, here c is a constant.
+	 */
+	public void rotate(int[][] matrix) {
+        int n=matrix.length;
+      //If we scan along the upper side, the lower side will also be scanned
+        //Therefore,the maximum value of i will be 2*i<=row -1
+	    for (int i=0; i<n/2; i++){ 
+	    	//The lower bound of j should be the same as i.
+            //If we scan the left side or left side of the inner loop, the right side will also be scanned.
+            //Therefore, the maximum value of j will be as follows
+            //i+1 will be the length of the right side have already been scanned with the corresponding i.
+	        for (int j=i; j<n-i-1; j++) {
+	            int tmp=matrix[i][j];
+	            matrix[i][j]=matrix[n-j-1][i];
+	            matrix[n-j-1][i]=matrix[n-i-1][n-j-1];
+	            matrix[n-i-1][n-j-1]=matrix[j][n-i-1];
+	            matrix[j][n-i-1]=tmp;
+	        }
+	    }
+    }
+	/**
+	 * window sum
+	 * LANG
+	 * @param A
+	 * @param k
+	 * @return
+	 */
+	public List<Integer> GetSum(List<Integer> A, int k) {
+		   ArrayList<Integer> result  = new ArrayList<>();
+		   if (A == null || A.size() == 0 || k <= 0) return result;
+		   int count = 0;
+		   for (int i = 0; i < A.size(); i++) {
+		       count++;
+		       if (count >= k) {
+		           int sum = 0;
+		           for (int j = i; j >= i - k + 1; j--) {
+		               sum += A.get(j);
+		           }
+		           result.add(sum);
+		       }
+		   }
+		   return result;
+		}
+
+	public class SumOfWindow {
+	    public int[] Solution(int[] array, int k) {
+	        if (array == null || array.length < k || k <= 0)    return null;
+	        int[] rvalue = new int[array.length - k + 1];
+	        for (int i = 0; i < k; i++)
+	            rvalue[0] += array[i];
+	        for (int i = 1; i < rvalue.length; i++) {
+	            rvalue[i] = rvalue[i-1] - array[i-1] + array[i+k-1];
+	        }
+	        return rvalue;
+	    }
+	}
+
 	/**
 	 * 169. Majority Element
 	 * 由于是要找超过n/2的数字，所以在计数的时候，count一定是大于0 的
@@ -336,6 +405,40 @@ public class Solution {
         return result;
     }
 	/**
+	 * 上题的双指针
+	 * LANG
+	 * @param capacity
+	 * @param weights
+	 * @param numOfContainers
+	 */
+	public static void findOptimalWeights(double capacity, double[] weights, int numOfContainers){
+        double min = 0.0;
+        int minPos = 0;
+        int maxPos = weights.length - 1;
+        int i =0 , j =weights.length-1;
+
+        Arrays.sort(weights);
+
+        while(i < j){
+            double sum = weights[i] + weights[j];
+
+            if(sum > min && sum <= capacity){
+                min = sum;
+                minPos = i;
+                maxPos = j;
+            }
+
+            if(sum > capacity){
+                j--;
+            }else {
+                i++;
+            }
+        }
+
+        System.out.println("The two numbers for which sum is closest to target are "
+                + weights[minPos] + " and " + weights[maxPos]);
+    }
+	/**
 	 * 无人机送货
 	 * LANG
 	 * @return
@@ -424,40 +527,7 @@ public class Solution {
 		
 		return null;
 	}
-	/**
-	 * 双指针
-	 * LANG
-	 * @param capacity
-	 * @param weights
-	 * @param numOfContainers
-	 */
-	public static void findOptimalWeights(double capacity, double[] weights, int numOfContainers){
-        double min = 0.0;
-        int minPos = 0;
-        int maxPos = weights.length - 1;
-        int i =0 , j =weights.length-1;
-
-        Arrays.sort(weights);
-
-        while(i < j){
-            double sum = weights[i] + weights[j];
-
-            if(sum > min && sum <= capacity){
-                min = sum;
-                minPos = i;
-                maxPos = j;
-            }
-
-            if(sum > capacity){
-                j--;
-            }else {
-                i++;
-            }
-        }
-
-        System.out.println("The two numbers for which sum is closest to target are "
-                + weights[minPos] + " and " + weights[maxPos]);
-    }
+	
 	
 	/**
 	 * Perfect Sum Problem (Print all subsets with given sum)

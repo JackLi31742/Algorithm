@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 public class Solution {
 
@@ -37,6 +38,56 @@ public class Solution {
         }
         return new String(word);
 	}
+	/**
+	 * 检验括号
+
+		给你一个str,里面只有 '('和‘)’,让你数valid pairs一共有多少,如果不是valid就返回-1. 
+		(判断是不是valid的parenthesis string，不是的话返回-1，是的话返回valid pair个数，即String.length() / 2 )
+		ASCII 40 ( 41 )
+	 * LANG
+	 * @param s
+	 * @return
+	 */
+	public boolean isValidParentheses(String s) {
+        if (s == null || s.length() == 0)   return true;
+        Stack<Character> stack = new Stack<Character>();
+        
+        for (int i = 0; i < s.length(); i++) {
+            if (stack.empty())  stack.push(s.charAt(i));
+            else if (s.charAt(i) - stack.peek() == 1 || s.charAt(i) - stack.peek() == 2)    stack.pop();
+            else    stack.push(s.charAt(i));
+        }
+        
+        return stack.empty();
+    }
+
+	/**
+	 * 937. Reorder Log Files
+	 * 字母日志在数字日志前
+	 * Time Complexity: O(AlogA), where A is the total content of logs.
+
+		Space Complexity: O(A).
+	 * LANG
+	 * @param logs
+	 * @return
+	 */
+	public String[] reorderLogFiles(String[] logs) {
+		Arrays.sort(logs, (log1, log2) -> {
+			//最多分成2个
+            String[] split1 = log1.split(" ", 2);
+            String[] split2 = log2.split(" ", 2);
+            //第二个是数字还是字母
+            boolean isDigit1 = Character.isDigit(split1[1].charAt(0));
+            boolean isDigit2 = Character.isDigit(split2[1].charAt(0));
+            if (!isDigit1 && !isDigit2) {
+                int cmp = split1[1].compareTo(split2[1]);
+                if (cmp != 0) return cmp;
+                return split1[0].compareTo(split2[0]);
+            }
+            return isDigit1 ? (isDigit2 ? 0 : 1) : -1;
+        });
+        return logs;
+    }
 	/**
 	 * leetcode 165. Compare Version Numbers
 	 * LANG

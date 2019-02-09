@@ -306,7 +306,41 @@ public class Solution {
     	return false;
     }
     
+    /**
+     * Maximum Minimum Path
+     * 给一个int[][]的matirx，对于一条从左上到右下的path pi，pi中的最小值是mi，求所有mi中的最大值。只能往下或右.
+     * [8, 4, 7]
+	   [6, 5, 9]
+		有3条path：
+		8-4-7-9 min: 4
+		8-4-5-9 min: 4
+		8-6-5-9 min: 5
+		return: 5
+
+     */
     
+	    private int min, max, row6, col6;
+	    public int maxMinPath(int[][] matrix) {
+	        row6 = matrix.length;
+	        col6 = matrix[0].length;
+	        min = Integer.MAX_VALUE;
+	        max = Integer.MIN_VALUE;
+	        dfsHelper(matrix, min, 0, 0);
+	        return max;
+	    }
+	
+	    public void dfsHelper(int[][] matrix, int min, int i, int j ){                
+	        if (i >= row6 || j >= col6) return;
+	        if (i == row6 - 1 && j == col6 - 1) {
+	            min = Math.min(min, matrix[i][j]);
+	            max = Math.max(max, min);
+	            return;
+	        }
+	        min = Math.min(min, matrix[i][j]);
+	        dfsHelper(matrix, min, i, j + 1);
+	        dfsHelper(matrix, min, i + 1, j);
+	    }
+
     /**
      * 79. Word Search
      * Given a 2D board and a word, find if the word exists in the grid.
