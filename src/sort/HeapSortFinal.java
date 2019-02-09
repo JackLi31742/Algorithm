@@ -2,6 +2,8 @@ package sort;
 
 public class HeapSortFinal {
 
+	//*时间复杂度为：O(nlogn)，空间复杂度为常数：O(1)
+	
 	public static void main(String[] args) {
 		int[] array = { 19, 38, 7, 36, 5, 5, 3, 2, 1, 0, 56 };
 
