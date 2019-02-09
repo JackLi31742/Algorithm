@@ -1,4 +1,4 @@
-package al;
+package array;
 
 public class Interval {
 	int start;

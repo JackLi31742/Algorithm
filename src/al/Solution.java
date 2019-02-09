@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import array.Interval;
+
 public class Solution {
 
 	public static int[] twoSum(int[] nums, int target) {

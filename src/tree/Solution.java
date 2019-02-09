@@ -9,6 +9,64 @@ import java.util.Stack;
 public class Solution {
 	
 	/**
+	 * Shortest distance between two nodes in BST
+	 * 
+	 * If both keys are greater than current node, we move to right child of current node.
+		If both keys are smaller than current node, we move to left child of current node.
+		If one keys is smaller and other key is greater, current node is Lowest Common Ancestor (LCA) 
+			of two nodes. We find distances of current node from two keys and return sum of the distances.
+	 */
+	
+	// This function returns distance of x from  
+	// root. This function assumes that x exists  
+	// in BST and BST is not NULL.  
+	static int distanceFromRoot(TreeNode root, int x)  
+	{  
+	    if (root.val == x)  
+	        return 0;  
+	    else if (root.val > x)  
+	        return 1 + distanceFromRoot(root.left, x);  
+	    return 1 + distanceFromRoot(root.right, x);  
+	}  
+	  
+	// Returns minimum distance beween a and b.  
+	// This function assumes that a and b exist  
+	// in BST.  
+	static int distanceBetween2(TreeNode root, int a, int b)  
+	{  
+	    if (root == null)  
+	        return 0;  
+	  
+	    // Both keys lie in left  
+	    if (root.val > a && root.val > b)  
+	        return distanceBetween2(root.left, a, b);  
+	  
+	    // Both keys lie in right  
+	    if (root.val < a && root.val < b) // same path  
+	        return distanceBetween2(root.right, a, b);  
+	  
+	    // Lie in opposite directions (Root is  
+	    // LCA of two nodes)  
+	    if (root.val >= a && root.val <= b)  
+	        return distanceFromRoot(root, a) + distanceFromRoot(root, b); 
+	          
+	    return 0; 
+	}  
+	  
+	// This function make sure that a is smaller  
+	// than b before making a call to findDistWrapper()  
+	static int findDistWrapper(TreeNode root, int a, int b)  
+	{  
+	    int temp = 0; 
+	if (a > b)  
+	    { 
+	    temp = a; 
+	    a = b; 
+	    b = temp; 
+	    }  
+	return distanceBetween2(root, a, b);  
+	}  
+	/**
 	 * Subtree
 	 * LANG
 	 * @param T1
