@@ -219,6 +219,64 @@ public class Solution {
     }
 
     /**
+     * amazon 1能走 0 不能走，9是障碍物 从左上角到9的最小距离 否则返回-1
+     * int[] x y distance
+     * LANG
+     * @param lot
+     * @return
+     */
+    int row2;int col2;
+    public int removeObstacle(int [][]lot){
+    	if (lot==null||lot.length==0||lot[0].length==0) {
+    		return -1;
+    	}
+    	if (lot[0][0]==9) {
+    		return 1;
+    	}
+    	row2=lot.length; col2=lot[0].length;
+    	boolean [][]visited=new boolean[row2][col2];
+    	// Mark the source cell as visited 
+    	visited[0][0]=true;
+    	return getDistance(lot,visited);
+    }
+    
+    public int getDistance(int [][]lot,boolean [][]visited){
+    	Queue<int[]> queue=new LinkedList<>();
+    	queue.add(new int[]{0,0,0});
+    	int rowNum[] = {-1, 0, 0, 1}; 
+    	int colNum[] = {0, -1, 1, 0};
+    	while(!queue.isEmpty()){
+    		int[]cur=queue.peek();
+    		// If we have reached the destination cell, 
+            // we are done 
+    		if (lot[cur[0]][cur[1]]==9) {
+				return cur[2];
+			}
+    		 // Otherwise dequeue the front cell in the queue 
+            // and enqueue its adjacent cells 
+    		queue.poll();
+    		for (int i = 0; i < 4; i++) {
+    			int x = cur[0] + rowNum[i]; 
+                int y = cur[1] + colNum[i]; 
+                // if adjacent cell is valid, has path and 
+                // not visited yet, enqueue it. 
+    			if (check(x, y)&&(lot[x][y]==1||lot[x][y]==9)&&!visited[x][y]) {
+    				// mark cell as visited and enqueue it 
+    				visited[x][y]=true;
+    				queue.add(new int[]{x,y,cur[2]+1});
+    			}
+			}
+    	}
+    	return -1;
+    }
+    
+    public boolean check(int x,int y){
+    	if (x>=0&&x<row2&&y>=0&&y<col2) {
+			return true;
+		}
+    	return false;
+    }
+    /**
      * 
      * 迷宫,求起点和终点的最短路径以及最短路径个数(百分数)
      * https://blog.csdn.net/caiyuzhu001/article/details/53431287
@@ -244,9 +302,21 @@ public class Solution {
 		        { 1, 1, 0, 0, 0, 0, 1, 0, 0, 1 } 
 		    }; 
 		
-		 Point source = new Point(0, 0); 
-		 Point dest =new Point(3, 4);
-		 int dis=solution.getDistance(mat, source, dest);
-		 System.out.println(dis);
+		
+		int lot[][]={   {1,0,0},
+						{1,0,0},
+						{1,9,1}};
+		int lot1[][]={
+				{1,1,1,1},
+				{0,1,1,1},
+				{0,1,0,1},
+				{1,1,9,1},
+				{0,0,1,1}
+		};
+		/*Point source = new Point(0, 0); 
+		Point dest =new Point(1, 2);
+		int dis=solution.getDistance(lot, source, dest);
+		System.out.println(dis);*/
+		System.out.println(solution.removeObstacle(lot));;
 	}
 }

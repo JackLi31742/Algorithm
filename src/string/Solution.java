@@ -407,7 +407,7 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	        return result;
 	    }
 	    /**
-	     *  Longest Substring with At Most K Distinct Characters
+	     * leetcode 340 Longest Substring with At Most K Distinct Characters
 	     *  
 	     *  滑动窗口，当map的大小超过k，开始移除，从左到右，依次减一，当为0的时候，移除，同时left自增
 	     */
@@ -445,8 +445,14 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	     * Time Complexity : O(n*n)
 	     */
 	    
-	   public static int countkDist(String str, int k) 
-	    { 
+	   public static int countkDist(String str, int k) { 
+		   
+		    if (str==null||str.length()==0||k==0) {
+				return 0;
+			}
+		    if (str.length()==1) {
+				return 1;
+			}
 	        // Initialize result 
 	        int res = 0; 
 	  
