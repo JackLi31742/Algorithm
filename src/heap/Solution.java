@@ -28,7 +28,9 @@ public class Solution {
 	 */
 	public static Point[] kClosest(Point[] points, Point origin, int k) {
         // write your code here
-		
+		if (k<1) {
+			return null;
+		}
 		//大顶堆的比较器
 		Comparator<Point> pointCompartor=new Comparator<Point>(){
 			 

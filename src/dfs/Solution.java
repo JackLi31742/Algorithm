@@ -192,7 +192,11 @@ public class Solution {
 				{'W','W','W','W','W','W','B','B'}
 		};
 		
-		System.out.println(solution.AreaCount(5, 8,whiteAndBlack));;
+//		System.out.println(solution.AreaCount(5, 8,whiteAndBlack));;
+		
+		int [][]maze={{8,4,7},{6,5,9}};
+		
+		System.out.println(solution.maxMinPath(maze));
 	}
 	/**
 	 * 542. 01 Matrix
@@ -245,7 +249,7 @@ public class Solution {
     }
     
     /**
-     * maze
+     * maze amazon
      * https://www.geeksforgeeks.org/rat-in-a-maze-backtracking-2/
      * 左上角到右下角maze[0][0] ->maze[N-1][N-1]
      * 0能走，1不能走
@@ -307,7 +311,7 @@ public class Solution {
     }
     
     /**
-     * Maximum Minimum Path
+     * amazon Maximum Minimum Path
      * 给一个int[][]的matirx，对于一条从左上到右下的path pi，pi中的最小值是mi，求所有mi中的最大值。只能往下或右.
      * [8, 4, 7]
 	   [6, 5, 9]

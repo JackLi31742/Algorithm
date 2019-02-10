@@ -223,6 +223,17 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 		System.out.println(result);;
 		
 		
+		Solution solution=new Solution();
+		int[]arr={1,2,3,4,5,6,7};
+		List<Integer> list=new ArrayList<>();
+		for (int i = 0; i < arr.length; i++) {
+			list.add(arr[i]);
+		}
+		int[]arr1=solution.SumOfWindow(arr, 3);
+		for (int i = 0; i < arr1.length; i++) {
+			System.out.println(arr1[i]);
+		}
+		System.out.println();
 		/*double capacity=20.0; double[] weights={10,3,7,17,5};
 		findOptimalWeights(capacity,weights,0);
 		
@@ -935,4 +946,72 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
         }
         return res/k;
     }
+    
+     /**
+      * window sum
+      * 一个数组，再给定一个长度，让你算出数组里面，在这个长度下，分别的连续和
+      */
+    
+    public List<Integer> GetwindowSum(List<Integer> A, int k) {
+    	   ArrayList<Integer> result  = new ArrayList<>();
+    	   if (A == null || A.size() == 0 || k <= 0) return result;
+    	   int count = 0;
+    	   for (int i = 0; i < A.size(); i++) {
+    	       count++;
+    	       if (count >= k) {
+    	           int sum = 0;
+    	           for (int j = i; j >= i - k + 1; j--) {
+    	               sum += A.get(j);
+    	           }
+    	           result.add(sum);
+    	       }
+    	   }
+    	   return result;
+    	}
+    
+        public int[] SumOfWindow(int[] array, int k) {
+            if (array == null || array.length < k || k <= 0)    return null;
+            
+            /**
+             * 如果窗口比arr长
+             */
+            if (k>array.length) {
+				int sum=0;
+            	for (int i = 0; i < array.length; i++) {
+					sum+=array[i];
+				}
+            	return new int[]{sum};
+			}
+            int[] result = new int[array.length - k + 1];
+            for (int i = 0; i < k; i++)
+                result[0] += array[i];
+            for (int i = 1; i < result.length; i++) {
+                result[i] = result[i-1] - array[i-1] + array[i+k-1];
+            }
+            return result;
+        }
+        
+        /**
+         * 长方形相交
+         * 紫色代表矩形A，红色代表矩形B，并分别用p1,p2,p3,p4代表对应的左上角与右下角
+         * 不重叠:
+         * 即B矩阵，可能在A的左侧、右侧、上侧、下侧。如果用公式表示，即 
+			(p2.y≤p3.y)∨(p1.y≥p4.y)∨(p2.x≤p3.x)∨(p1.x≥p4.x) 
+			则，两个矩阵重叠时，公式为 
+			¬[(p2.y≤p3.y)∨(p1.y≥p4.y)∨(p2.x≤p3.x)∨(p1.x≥p4.x)] 
+			根据德·摩根定律可转换为 
+			(p2.x>p3.x)∧(p2.y>p3.y)∧(p1.x<p4.x)∧(p1.y<p4.y)
+         */
+        
+       public boolean isOverlap( Rect rc1, Rect rc2){
+            if (rc1.x + rc1.width  > rc2.x &&
+            	rc1.y + rc1.height > rc2.y &&
+                rc2.x + rc2.width  > rc1.x &&
+                rc2.y + rc2.height > rc1.y
+               )
+                return true;
+            else
+                return false;
+        }
+   
 }
