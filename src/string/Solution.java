@@ -541,6 +541,112 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	        return list; 
 	    }
 	    /**
+	     * 1639. K-Substring with K different characters
+	     * 计算长度为K且包含K个不同字符的子串数
+	     * LANG
+	     * @param stringIn
+	     * @param K
+	     * @return
+	     */
+	    public static int KSubstring(String stringIn, int K) {
+	        // Write your code here
+	        if(stringIn==null||stringIn.length()==0||K==0){
+	            return 0;
+	        }
+	        if(stringIn.length()==1){
+	            return 1;
+	        }
+//	        int reslut=0;
+	        int count[]=new int[256];
+//	        List<String> list=new ArrayList<>();
+	        Set<String> set=new HashSet<>();
+	        for (int i=0; i<stringIn.length(); i++){
+	            int disCount=0;
+	            Arrays.fill(count,0);
+	            for(int j=i;j<stringIn.length();j++){
+	                if(count[stringIn.charAt(j)-'a']==0){
+	                    disCount++;
+	                }
+	                count[stringIn.charAt(j)-'a']++;
+	                if(disCount==K){
+//	                    reslut++;
+	                    set.add(stringIn.substring(i,j));
+	                }
+	            }
+	        } 
+//	        System.out.println(list);
+	        return set.size();
+	    }
+	    /**
+	     * 双指针，O(n)时间法度。
+			i从0开始loop，j也从0开始，但每一个新i的循环，j不返回，继续往前。
+			用一个HashMap来保存当前substring里的字母，找到长度为k且不包含重复字母的substring后，remove i所指的字母，i++，继续寻找
+			保持i不变，j增加，到了k的时候，break掉
+			i增加
+	     * LANG
+	     * @param stringIn
+	     * @param K
+	     * @return
+	     */
+	    public static int KSubstring2(String stringIn, int K) {
+	        if (stringIn == null || stringIn.length() == 0 || K <= 0) {
+	            return 0;
+	        }
+	        HashMap<Character, Integer> charMap = new HashMap<>();
+	        HashSet<String> resultSet = new HashSet<String>();
+	        int len = stringIn.length();
+	        int j = 0;
+	        for (int i = 0; i < len; i++) {
+	        	//当j到了len的时候，i继续向后，缩小了窗口
+	            while (j < len && charMap.size() < K) {
+	                char c = stringIn.charAt(j);
+	                //如果出现过相同的，直接break掉while
+	                if (charMap.containsKey(c)) {
+	                    break;
+	                }
+	                charMap.put(c, 1);
+	                j++;
+	                if (charMap.size() == K) {
+	                    resultSet.add(stringIn.substring(i, j));
+	                }
+	            }
+	            charMap.remove(stringIn.charAt(i));
+	        }
+	        System.out.println(resultSet);
+	        return resultSet.size();
+	    }
+	    /**
+	     * 1638. Least Substring
+
+	     * 给定一个包含n个小写字母的字符串s，要求将字符串划分成若干个连续子串，子串中的字母类型相同，同时子串的字母个数不超过k，输出最少划分的子串数量
+	     * 输入: s = "aabbbc", k = 3
+			输出: 3
+			解释: 
+			划分成 "aa", "bbb", "c" 三个子串
+			
+			输入: s = "aabbbc", k = 2
+			输出: 4
+			解释:
+			划分成 "aa", "bb", "b", "c" 四个子串
+	     * LANG
+	     * @param s
+	     * @param k
+	     * @return
+	     */
+	    public int getAns(String s, int k) {
+	        // Write your code here
+	         int n = s.length(), ans = 1, cnt = 1;
+	        for (int i = 1; i < n; i++) {
+	            if (s.charAt (i) == s.charAt (i - 1) && cnt < k) {
+	                cnt++;
+	            } else {
+	                ans++;
+	                cnt = 1;
+	            }
+	        }
+	        return ans;
+	    }
+	    /**
 	     * longest substring with k unique characters 
 	     * https://www.geeksforgeeks.org/find-the-longest-substring-with-k-unique-characters-in-a-given-string/
 	     * Time:O(N)
@@ -667,11 +773,14 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 //			String s = "pqpqs";int k = 2;
 //			System.out.println(getAllSubtringWithK(s, k));;
 	    	
-	    	String s ="a, a, a, a, b,b,b,c, c";
-
-	    	String[] banned={"a"};
+//	    	String s ="a, a, a, a, b,b,b,c, c";
+//
+//	    	String[] banned={"a"};
+//	    	
+//	    	System.out.println(mostCommonWord(s,banned));;
 	    	
-	    	System.out.println(mostCommonWord(s,banned));;
+	    	String s="abacab";
 	    	
+	    	System.out.println(KSubstring2(s, 3));;
 		}
 }

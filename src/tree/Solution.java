@@ -55,17 +55,16 @@ public class Solution {
 	  
 	// This function make sure that a is smaller  
 	// than b before making a call to findDistWrapper()  
-	static int findDistWrapper(TreeNode root, int a, int b)  
-	{  
-	    int temp = 0; 
-	if (a > b)  
-	    { 
-	    temp = a; 
-	    a = b; 
-	    b = temp; 
-	    }  
-	return distanceBetween2(root, a, b);  
-	}  
+	static int findDistWrapper(TreeNode root, int a, int b) {
+		int temp = 0;
+		if (a > b) {
+			temp = a;
+			a = b;
+			b = temp;
+		}
+		return distanceBetween2(root, a, b);
+	}
+
 	/**
 	 * Subtree
 	 * LANG

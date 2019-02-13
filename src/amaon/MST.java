@@ -17,7 +17,11 @@ public class MST {
 public List<Connections> minumimCostConnections(int num,List<Connections> connections){
 		
 		List<Connections> result=new ArrayList<>();
-		
+		//先把空的情形挡掉
+	    if (connections == null || connections.size() == 0){
+	        return result;
+	    }
+
 		Comparator<Connections> comparator=new Comparator<Connections>() {
 
 			public int compare(Connections o1, Connections o2) {

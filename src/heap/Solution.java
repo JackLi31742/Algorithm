@@ -109,6 +109,57 @@ public class Solution {
 		}
 	}
 	
+	/**
+	 * 1562. Number of restaurants
+	 * 给出一个List，里面的数据代表每一个餐厅的坐标[x, y]。顾客的坐标处于原点[0, 0]。
+	 * 先找出n家离顾客位置最近的餐厅，然后取 n 家先出现在List中且与顾客的距离不超过 n 家离顾客最近的餐厅的最长距离。
+	 * 返回这 n 家餐厅的坐标序列，按输入数据原始的顺序。
+	 * LANG
+	 * @param restaurant
+	 * @param n
+	 * @return
+	 */
+	 public static List<List<Integer>> nearestRestaurant(List<List<Integer>> restaurant, int n) {
+	        // Write your code here
+		 List<List<Integer>> result=null;
+		 if (n<1||restaurant==null||restaurant.size()==0||n>restaurant.size()) {
+			result=new ArrayList<>();
+			return result;
+		}
+		 if(restaurant.size() == n) return restaurant;
+		 result=new ArrayList<>(n);
+		 Comparator<List<Integer>> comparator=new Comparator<List<Integer>>() {
+
+			public int compare(List<Integer> o1, List<Integer> o2) {
+				
+				return Integer.compare(getDis(o2), getDis(o1));
+			}
+		};
+		
+		PriorityQueue<List<Integer>> heap=new PriorityQueue<>(n,comparator);
+		
+		for (int i = 0; i < restaurant.size(); i++) {
+			heap.add(restaurant.get(i));
+			if (heap.size()>n) {
+				heap.poll();
+			}
+		}
+		
+		int maxDistance = getDis(heap.poll());
+		for(int i = 0; i < restaurant.size(); i++) {
+            if(result.size() == n) break;
+            int distance =getDis(restaurant.get(i));
+            if(distance <= maxDistance) {
+                result.add(restaurant.get(i));
+            }
+        }
+		return result;
+	 }
+	 
+	 public static int getDis(List<Integer> o1){
+		 return o1.get(0)*o1.get(0)+o1.get(1)*o1.get(1);
+	 }
+	 
 	public static void main(String[] args) {
 		/*Point p1=new Point(4, 6);
 		Point p2=new Point(4, 7);
@@ -122,6 +173,14 @@ public class Solution {
 		for (Point point : result) {
 			System.out.println(point);
 		}*/
+		
+		List<List<Integer>> restaurant=new ArrayList<>();
+		List<Integer> inner=new ArrayList<>();
+		inner.add(1);
+		inner.add(2);
+		restaurant.add(inner);
+		
+		System.out.println(nearestRestaurant(restaurant, 1));;
 		
 	}
 	
