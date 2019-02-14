@@ -39,7 +39,7 @@ public class OrderDependency {
         if (list == null || list.size() == 0) {
             return result;
         }
-        int totalOrder = 0;
+//        int totalOrder = 0;
         Map<Order, List<Order>> adjList = new HashMap<>();
         //一个入度记录表：HashMap
         Map<Order, Integer> indegree = new HashMap<>();

@@ -44,42 +44,7 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 	        }
 	    }
     }
-	/**
-	 * window sum
-	 * LANG
-	 * @param A
-	 * @param k
-	 * @return
-	 */
-	public List<Integer> GetSum(List<Integer> A, int k) {
-		   ArrayList<Integer> result  = new ArrayList<>();
-		   if (A == null || A.size() == 0 || k <= 0) return result;
-		   int count = 0;
-		   for (int i = 0; i < A.size(); i++) {
-		       count++;
-		       if (count >= k) {
-		           int sum = 0;
-		           for (int j = i; j >= i - k + 1; j--) {
-		               sum += A.get(j);
-		           }
-		           result.add(sum);
-		       }
-		   }
-		   return result;
-		}
-
-	public class SumOfWindow {
-	    public int[] Solution(int[] array, int k) {
-	        if (array == null || array.length < k || k <= 0)    return null;
-	        int[] rvalue = new int[array.length - k + 1];
-	        for (int i = 0; i < k; i++)
-	            rvalue[0] += array[i];
-	        for (int i = 1; i < rvalue.length; i++) {
-	            rvalue[i] = rvalue[i-1] - array[i-1] + array[i+k-1];
-	        }
-	        return rvalue;
-	    }
-	}
+	
 
 	/**
 	 * 169. Majority Element
@@ -218,13 +183,13 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 		retu.add(list5);
 		retu.add(list6);
 		retu.add(list7);
-		List<List<Integer>> result=twoSum3(11000,forward,retu);
+		//List<List<Integer>> result=twoSum3(11000,forward,retu);
 		
-		System.out.println(result);;
+		//System.out.println(result);;
 		
 		
 		Solution solution=new Solution();
-		int[]arr={1,2,3,4,5,6,7};
+		/*int[]arr={1,2,3,4,5,6,7};
 		List<Integer> list=new ArrayList<>();
 		for (int i = 0; i < arr.length; i++) {
 			list.add(arr[i]);
@@ -233,7 +198,7 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 		for (int i = 0; i < arr1.length; i++) {
 			System.out.println(arr1[i]);
 		}
-		System.out.println();
+		System.out.println();*/
 		/*double capacity=20.0; double[] weights={10,3,7,17,5};
 		findOptimalWeights(capacity,weights,0);
 		
@@ -249,6 +214,10 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 		
 		/*int[]nums={9,6,4,2,3,5,7,0,1};
 		missingNumber(nums);*/
+		
+		int[]states={1,1,1,0,1,1,1,1};
+		System.out.println(solution.cellCompete(states, 2));;
+		
 	}
 	
 	/**
@@ -991,6 +960,7 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
             return result;
         }
         
+        
         /**
          * 长方形相交
          * 紫色代表矩形A，红色代表矩形B，并分别用p1,p2,p3,p4代表对应的左上角与右下角
@@ -1013,5 +983,87 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
             else
                 return false;
         }
-   
+       /**
+        * 数组的最大公约数
+        * LANG
+        * @param ints
+        * @return
+        */
+		public int generalizedGCD(int num, int[] arr) {
+			for (int i : arr) {
+				if (i <= 0) {
+					return -1;
+				}
+			}
+			if (num == 0) {
+				return -1;
+			}
+			if (num == 1) {
+				return arr[0];
+			}
+			int index = 1;
+			int re = arr[0];
+			while (index < num) {
+				re = gcd(re, arr[index]);
+				index++;
+			}
+			return re;
+		}
+	
+		public int gcd(int a, int b) {
+			int t;
+			if (a < b) {
+				t = b;
+				b = a;
+				a = t;
+			}
+			int c = a % b;
+			while (c > 0) {
+				a = b;
+				b = c;
+				c = a % b;
+			}
+			return b;
+		}
+
+		/**
+		 * 如果单元格的两个边上的邻居都是活动的或不活动的，则在第二天，该单元变得不活动。
+		 * LANG
+		 * @param states
+		 * @param days
+		 * @return
+		 */
+		public List<Integer> cellCompete(int[] states, int days){
+	        
+			List<Integer> result=new ArrayList<>(states.length);
+			if (days==0) {
+				for (int i = 0; i < states.length; i++) {
+					result.add(states[i]);
+				}
+				return result;
+			}
+			int [] temp=new int[states.length];
+			for (int i = 0; i < days; i++) {
+				for (int j = 0; j < states.length; j++) {
+					if (j==0) {
+						temp[0]=0^states[j+1];
+					}else if (j==states.length-1) {
+						temp[j]=0^states[j-1];
+					}else {
+						
+						temp[j]=states[j-1]^states[j+1];
+					}
+				}
+				for (int j = 0; j < temp.length; j++) {
+					states[j]=temp[j];
+				}
+			}
+			
+			for (int i = 0; i < temp.length; i++) {
+				result.add(temp[i]);
+			}
+			return result;
+			
+			
+	    }
 }
