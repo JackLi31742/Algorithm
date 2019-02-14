@@ -174,13 +174,21 @@ public class Solution {
 			System.out.println(point);
 		}*/
 		
-		List<List<Integer>> restaurant=new ArrayList<>();
+		/*List<List<Integer>> restaurant=new ArrayList<>();
 		List<Integer> inner=new ArrayList<>();
 		inner.add(1);
 		inner.add(2);
 		restaurant.add(inner);
 		
-		System.out.println(nearestRestaurant(restaurant, 1));;
+		System.out.println(nearestRestaurant(restaurant, 1));;*/
+		
+		int []nums={1,3,-1,-3,5,3,6,7}; int k=3;
+		
+		int []result=maxSlidingWindow(nums, k);
+		for (int i = 0; i < result.length; i++) {
+			System.out.println(result[i]);;
+			
+		}
 		
 	}
 	
@@ -309,4 +317,45 @@ public class Solution {
 		    Collections.reverse(top_k);
 		    return top_k;
 	 }
+	 /**
+	  * 239. Sliding Window Maximum
+	  * LANG
+	  * @param nums
+	  * @param k
+	  * @return
+	  */
+	public static int[] maxSlidingWindow(int[] nums, int k) {
+		if (nums == null || k == 0 || nums.length == 0) {
+			return nums;
+		}
+		if (k > nums.length) {
+			k = nums.length;
+		}
+		Comparator<Integer> comparator = new Comparator<Integer>() {
+
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				// TODO Auto-generated method stub
+				return Integer.compare(o2, o1);
+			}
+		};
+		PriorityQueue<Integer> heap = new PriorityQueue<>(k, comparator);
+		int left = 0;
+		int right = left + k - 1;
+		int[] result = new int[nums.length - k + 1];
+		for (int i = left; i <= right; i++) {
+			heap.add(nums[i]);
+		}
+		while (right <= nums.length-1) {
+			result[left] = heap.peek();
+			heap.remove(nums[left]);
+			left++;
+			right++;
+			if (right>nums.length-1) {
+				break;
+			}
+			heap.add(nums[right]);
+		}
+		return result;
+	}
 }
