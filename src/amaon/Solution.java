@@ -1,12 +1,32 @@
 package amaon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+
+
+
 
 
 public class Solution {
 
+	public static void main(String[] args) {
+		Solution solution=new Solution();
+		int [][]points = {{1,3},{-2,2}};int K = 3;
+		int [][]result=solution.kClosest(points, K);
+		for (int i = 0; i < result.length; i++) {
+			for (int j = 0; j < result[0].length; j++) {
+				System.out.println(result[i][j]);
+			}
+		}
+	}
 	/**
 	 * deep copy
 	 * 138. Copy List with Random Pointer
@@ -99,4 +119,403 @@ public class Solution {
         mark[course] = 2;
         return true;
     }
+    
+    /**
+	 * 1. Two Sum
+	 * LANG
+	 * @param nums
+	 * @param target
+	 * @return
+	 */
+	public int[] twoSum(int[] nums, int target) {
+        int result[]=new int[2];
+        Map<Integer, Integer> map=new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+			if (map.containsKey(target-nums[i])) {
+				result[0]=i;
+				result[1]=map.get(target-nums[i]);
+				return result;
+			}
+			map.put(nums[i], i);
+		}
+        return result;
+    }
+	
+	/**
+	 * 上题的双指针
+	 * 167. Two Sum II - Input array is sorted
+	 * LANG
+	 * @param capacity
+	 * @param weights
+	 * @param numOfContainers
+	 */
+	public static void findOptimalWeights(double capacity, double[] weights, int numOfContainers){
+        double min = 0.0;
+        int minPos = 0;
+        int maxPos = weights.length - 1;
+        int i =0 , j =weights.length-1;
+
+        Arrays.sort(weights);
+
+        while(i < j){
+            double sum = weights[i] + weights[j];
+
+            if(sum > min && sum <= capacity){
+                min = sum;
+                minPos = i;
+                maxPos = j;
+            }
+
+            if(sum > capacity){
+                j--;
+            }else {
+                i++;
+            }
+        }
+
+        System.out.println("The two numbers for which sum is closest to target are "
+                + weights[minPos] + " and " + weights[maxPos]);
+    }
+	/**
+	 * 无人机送货
+	 * LANG
+	 * @return
+	 */
+	public static List<List<Integer>> twoSum3(int sum,List<List<Integer>> forwarding 
+			,List<List<Integer>> retrun){
+		Comparator<List<Integer>> comparator=new Comparator<List<Integer>>() {
+			
+			public int compare(List<Integer> list1,List<Integer> list2){
+				return list1.get(1)-list2.get(1);
+			}
+		};
+		Collections.sort(forwarding,comparator);
+		Collections.sort(retrun,comparator);
+		List<List<Integer>> result = new ArrayList<>();
+
+		int maxResult=0;
+		for (int i = forwarding.size()-1; i >=0; i--) {
+			for (int j = retrun.size()-1; j >=0; j--) {
+				int temp=forwarding.get(i).get(1) + retrun.get(j).get(1);
+				if (temp <= sum&&temp>=maxResult) {
+					maxResult=temp;
+					List<Integer> ele = new ArrayList<>();
+					ele.add(forwarding.get(i).get(0));
+					ele.add(retrun.get(j).get(0));
+					result.add(ele);
+				}
+			}
+		}
+		
+		/*list.sort((e1,e2)->e1.get(2)-e2.get(2));
+		int max=list.get(list.size()-1).get(2);
+		add(result, list, list.size()-1);
+		for (int i = list.size()-2; i >0 ; i--) {
+			if (list.get(i).get(2)<max) {
+				break;
+			}else {
+				add(result, list, i);
+			}
+		}*/
+		return result;
+	}
+	
+	public static void add(List<List<Integer>> result,List<List<Integer>> list,int i){
+		List<Integer> ele = new ArrayList<>();
+		ele.add(list.get(i).get(0));
+		ele.add(list.get(i).get(1));
+		result.add(ele);
+	}
+	
+	/**
+     * window sum
+     * 一个数组，再给定一个长度，让你算出数组里面，在这个长度下，分别的连续和
+     */
+   
+   public List<Integer> GetwindowSum(List<Integer> A, int k) {
+   	   ArrayList<Integer> result  = new ArrayList<>();
+   	   if (A == null || A.size() == 0 || k <= 0) return result;
+   	   int count = 0;
+   	   for (int i = 0; i < A.size(); i++) {
+   	       count++;
+   	       if (count >= k) {
+   	           int sum = 0;
+   	           for (int j = i; j >= i - k + 1; j--) {
+   	               sum += A.get(j);
+   	           }
+   	           result.add(sum);
+   	       }
+   	   }
+   	   return result;
+   	}
+   
+       public int[] SumOfWindow(int[] array, int k) {
+           if (array == null || array.length < k || k <= 0)    return null;
+           
+           /**
+            * 如果窗口比arr长
+            */
+           if (k>array.length) {
+				int sum=0;
+           	for (int i = 0; i < array.length; i++) {
+					sum+=array[i];
+				}
+           	return new int[]{sum};
+			}
+           int[] result = new int[array.length - k + 1];
+           for (int i = 0; i < k; i++)
+               result[0] += array[i];
+           for (int i = 1; i < result.length; i++) {
+               result[i] = result[i-1] - array[i-1] + array[i+k-1];
+           }
+           return result;
+       }
+       
+	
+	 /**
+	  * 973. K Closest Points to Origin
+	  * LANG
+	  * @param points
+	  * @param K
+	  * @return
+	  */
+	 
+	 public int[][] kClosest(int[][] points, int K) {
+		 int[][]resut=null;
+		 if (points==null||K<1) {
+			return resut;
+		}
+		 if (K>points.length) {
+			K=points.length;
+		}
+		 resut=new int[K][];
+	     Comparator<int[]> comparator=new Comparator<int[]>() {
+	    	  
+	    	  public int compare(int[]point1,int[]point2){
+	    		 return disCom(point1, point2);  
+	    	  }
+		};
+		PriorityQueue<int[]> heap=new PriorityQueue<>(K,comparator);
+		
+		for (int i = 0; i < points.length; i++) {
+			heap.add(points[i]);
+			if (heap.size()>K) {
+				heap.poll();
+			}
+		}
+		
+		
+		
+		while(!heap.isEmpty()){
+			resut[K-1]=heap.poll();
+			K--;
+		}
+		return resut;
+	 }
+	 
+	 public int disCom(int[]point1,int[]point2){
+		 int dis1=point1[0]*point1[0]+point1[1]*point1[1];
+		 int dis2=point2[0]*point2[0]+point2[1]*point2[1];
+		 return dis2-dis1;
+	 }
+	 
+	 /**
+		 * lintcode
+		 * 612. K Closest Points
+		 * Time complexity: O(nlogk), where n is the number of points.
+			Space complexity: O(k). A PriorityQueue of size k is used.
+		 * LANG
+		 * @param points
+		 * @param origin
+		 * @param k
+		 * @return
+		 */
+		public static Point[] kClosest(Point[] points, Point origin, int k) {
+	        // write your code here
+			Point[] result=null;
+			if (k<1||points==null) {
+				return new Point[0];
+			}
+			if (k>points.length) {
+				k=points.length;
+			}
+			result=new Point[k];
+			//大顶堆的比较器
+			Comparator<Point> pointCompartor=new Comparator<Point>(){
+				 
+		        @Override
+		        public int compare(Point p1,Point p2) {
+		            return distanceCompare(p1,p2,origin);
+		        }
+		    };
+		
+			Queue<Point> heap=new PriorityQueue<>(k,pointCompartor);
+			
+			for (int i = 0; i < points.length; i++) {
+				/*if (i<k) {
+					heap.add(points[i]);
+				}else {
+					if (distanceCompare(points[i],heap.peek(),origin)>0) {
+						heap.poll();
+						heap.add(points[i]);
+					}
+				}*/
+				heap.add(points[i]);
+				if(heap.size()>k){
+				    heap.poll();
+				}
+				
+			}
+			
+			
+			
+			
+			while(!heap.isEmpty()){
+				result[k-1]=heap.poll();
+				k--;
+			}
+			
+			//小顶堆的比较器
+		    /*Comparator<Point> pointCompartor2=new Comparator<Point>(){
+		    	
+		    	@Override
+		    	public int compare(Point p1,Point p2) {
+		    		return distanceCompare(p2,p1,origin);
+		    	}
+		    };
+			Point[] result=heap.toArray(new Point[k]);
+			Arrays.sort(result,pointCompartor2);*/
+			return result;
+	    }
+		
+		
+
+	    /**
+	     * 大顶堆需要是2-1
+	     * LANG
+	     * @param p1
+	     * @param p2
+	     * @param origin
+	     * @return
+	     */
+		public static int distanceCompare(Point p1,Point p2,Point origin){
+			int dis1=(p1.x-origin.x)*(p1.x-origin.x)+(p1.y-origin.y)*(p1.y-origin.y);
+			int dis2=(p2.x-origin.x)*(p2.x-origin.x)+(p2.y-origin.y)*(p2.y-origin.y);
+			int compare=dis2-dis1;
+			if (compare==0) {
+				int comX=p2.x-p1.x;
+				if (comX==0) {
+					int comY=p2.y-p1.y;
+					
+					return comY;
+					
+				}else {
+					return comX;
+				}
+			}else {
+				
+				return compare;
+			}
+		}
+	 
+		/**
+		  * 5. Longest Palindromic Substring
+		  * 动态规划：
+		  * 状态dp[j][i]表示索引j到索引i的子串是否是回文串
+		  * j=i,dp[j][i]=true;
+			i-j=1,dp[j][i]=str[i]==str[j]
+			i-j>1,dp[j][i]=(str[i]==str[j])&&dp[j+1][i-1]
+			dp[j][i]为true时表示索引j到索引i形成的子串为回文子串，且子串起点索引为j,长度为i - j + 1。
+			算法时间复杂度为O(N ^ 2)
+			https://www.jianshu.com/p/c82cada7e5b0
+		  * LANG
+		  * @param s
+		  * @return
+		  */
+		 public String longestPalindrome2(String s) {
+		        if (s==null||s.length()==0) {
+					return s;
+				}
+		        int len=s.length();
+		    	boolean [][]dp=new boolean[len][len];
+		    	int maxlen=1;
+		    	int start=0;
+		    	for (int i = 0; i < len; i++) {
+					for (int j = 0; j <= i; j++) {
+						if (i-j<2) {
+							dp[j][i]=(s.charAt(i)==s.charAt(j));
+						}else {
+							dp[j][i]=((s.charAt(i)==s.charAt(j))&&dp[j+1][i-1]);
+						}
+						
+						if (dp[j][i]&&maxlen<i-j+1) {
+							maxlen=i-j+1;
+							start=j;
+							
+						}
+					}
+				}
+		    	
+		    	return s.substring(start,maxlen+start);
+		    }
+		 
+	 /**
+	     * amazon 节点是多个，不仅仅是两个子节点
+	     * 类似于Subtree with Maximum Average
+	     */
+	    private static CategoryNode subNode;
+	    private static Result subResult;
+	    public static CategoryNode getMostPopularNode(CategoryNode root){
+	    	getResult(root);
+	    	return subNode;
+	    }
+	    public static Result getResult(CategoryNode root){
+	    	if (root==null) {
+				return new Result(0, 0);
+			}
+	    	int sumAll=0;int sizeAll=0;
+	    	ArrayList<CategoryNode> subCategoryNode=root.subCategoryNode;
+	    	for (int i = 0; i < subCategoryNode.size(); i++) {
+	    		CategoryNode cur=subCategoryNode.get(i);
+	    		Result cuResult=getResult(cur);
+	    		sumAll+=cuResult.sum;
+	    		sizeAll+=cuResult.size;
+			}
+	    	
+	    	Result result=new Result(sumAll+root.value, sizeAll+1);
+	    	System.out.println("result:"+result);
+	    	//subtreeResult.sum/subtreeResult.size<result.sum/result.size  当前结果大于全局则更新
+	    	//当前结果为root和result
+	    	if (subNode==null||((result.sum*subResult.size>result.size*subResult.sum)
+	    			            &&(root.subCategoryNode.size()>0))) {
+				subNode=root;
+				subResult=result;
+				System.out.println("临时结果："+subNode+","+subResult);
+			}
+	    	
+	    	return result;
+	    }
+	    
+	    /**
+         * 长方形相交
+         * 紫色代表矩形A，红色代表矩形B，并分别用p1,p2,p3,p4代表对应的左上角与右下角
+         * 不重叠:
+         * 即B矩阵，可能在A的左侧、右侧、上侧、下侧。如果用公式表示，即 
+			(p2.y≤p3.y)∨(p1.y≥p4.y)∨(p2.x≤p3.x)∨(p1.x≥p4.x) 
+			则，两个矩阵重叠时，公式为 
+			¬[(p2.y≤p3.y)∨(p1.y≥p4.y)∨(p2.x≤p3.x)∨(p1.x≥p4.x)] 
+			根据德·摩根定律可转换为 
+			(p2.x>p3.x)∧(p2.y>p3.y)∧(p1.x<p4.x)∧(p1.y<p4.y)
+         */
+        
+       public boolean isOverlap( Rect rc1, Rect rc2){
+            if (rc1.x + rc1.width  > rc2.x &&
+            	rc1.y + rc1.height > rc2.y &&
+                rc2.x + rc2.width  > rc1.x &&
+                rc2.y + rc2.height > rc1.y
+               )
+                return true;
+            else
+                return false;
+        }
 }
