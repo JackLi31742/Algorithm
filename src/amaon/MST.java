@@ -9,6 +9,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * https://shmilyaw-hotmail-com.iteye.com/blog/2010747
+ * Kruskal’s Minimum Spanning Tree
+ * 							increasing
+ *  1. Sort all the edges in non-decreasing order of their weight.
+	2. Pick the smallest edge. Check if it will form a cycle with the spanning tree formed already. 
+		If cycle is not formed, include this edge. Else, discard it.
+	3. Repeat step#2 until there are (V-1) edges in the spanning tree.
+
+
+
+ * https://www.geeksforgeeks.org/?p=26604/
+ * Time Complexity: O(ElogE) or O(ElogV). 
+ * Sorting of edges takes O(ELogE) time.
+ *  After sorting, we iterate through all edges 
+ *  and apply find-union algorithm. 
+ *  The find and union operations can take atmost 
+ *  O(LogV) time. So overall complexity is O(ELogE + ELogV) time. 
+ *  The value of E can be atmost O(V2), so O(LogV) are O(LogE) same. 
+ *  Therefore, overall time complexity is O(ElogE) or O(ElogV)
+ * @author LANG
+ *
+ */
 public class MST {
 
 	//Time Complexity:O(ElogE)+O(E)+O(E)*O(V)+O(ElogE)=O(E*(logE+V)) E是connections.size() V是num

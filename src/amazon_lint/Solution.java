@@ -23,6 +23,12 @@ public class Solution {
 		用一个HashMap来保存当前substring里的字母，找到长度为k且不包含重复字母的substring后，remove i所指的字母，i++，继续寻找
 		保持i不变，j增加，到了k的时候，break掉
 		i增加
+		
+		i starts from 0 loop, j also starts from 0, but every new i loop, j does not return, continue to move forward.
+		Use a HashMap to save the letters in the current substring, find the substring of length k and do not contain duplicate letters, 
+		the letter pointed to by remove i, i++, continue to search
+		Keep i unchanged, j increases, when it is k, break
+		i increase
      * LANG
      * @param stringIn
      * @param K
@@ -61,10 +67,14 @@ public class Solution {
 	 * 给出一个List，里面的数据代表每一个餐厅的坐标[x, y]。顾客的坐标处于原点[0, 0]。
 	 * 先找出n家离顾客位置最近的餐厅，然后取 n 家先出现在List中且与顾客的距离不超过 n 家离顾客最近的餐厅的最长距离。
 	 * 返回这 n 家餐厅的坐标序列，按输入数据原始的顺序。
-	 * LANG
-	 * @param restaurant
-	 * @param n
-	 * @return
+	 * 
+	 * Time complexity: O(nlogk), where n is the number of points.即restaurant.size() k为n
+	 * 构造大小为k的大顶堆，for循环，把每个餐厅都加到堆里，当堆的大小大于k的时候，poll堆顶元素，得到的堆保存的就是n家离顾客位置最近的餐厅
+	 * 
+	 * Construct a max heap of size k, for loop, add each restaurant distance to the heap.
+	 *  When the size of the heap is larger than k, poll the top of heap, 
+	 *  the heap holds the n restaurants closest to the customer.
+	 *  distance=x^2+y^2
 	 */
 	 public static List<List<Integer>> nearestRestaurant(List<List<Integer>> restaurant, int n) {
 	        // Write your code here
@@ -206,6 +216,12 @@ public class Solution {
 	  * 由于飞机起降过程中不能播放电影，LQ航空公司必须保证两部电影加起来的时长小于等于飞行时长减去30分钟，
 	  * 同时又希望两部电影总长度尽量长。现在给定t代表航班飞行时长(分钟)，一个dur[]数组代表所有电影的时间长度，
 	  * 请从小到大分别输出两部电影的时长，如果有多组总时长一样的，选取包含单独最长的电影组. 题目保证有解
+	  * 
+	  * sort dur， two pointer,i=0;j=dur.length - 1; while loop ,sum = dur[i] + dur[j],
+	  * if sum > max ,update max, Assignment result,
+	  * if sum=max ,Determine whether the current result is larger than the saved result, 
+	  * yes and update the result
+	  * if sum<=t-30,i++;else j--;
 	  * LANG
 	  * @param t
 	  * @param dur

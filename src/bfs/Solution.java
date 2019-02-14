@@ -132,7 +132,8 @@ public class Solution {
 			（1）We LOOP till queue is not empty
 			（2）Dequeue front cell from the queue
 			（3）Return if the destination coordinates have reached.
-			（4）For each of its four adjacent cells, if the value is 1 and they are not visited yet, we enqueue it in the queue and also mark them as visited.
+			（4）For each of its four adjacent cells, if the value is 1 and they are not visited yet, 
+			we enqueue it in the queue and also mark them as visited.
      */
     
     int row=0;int col=0;
@@ -224,14 +225,25 @@ public class Solution {
 
     /**
      * amazon 1能走 0 不能走，9是障碍物 从左上角到9的最小距离 否则返回-1
-     * int[] x y distance
+     * int[] store three element:x y distance 
+     * time complexity is O(MN).M is length of row,N is length of column
+		
+		1、 start from the source  and call BFS .
+		2、keep a queue to store the element of the matrix 
+			and initialize it with the source .
+		3、keep a Boolean array visited of same size as input matrix .
+			（1）We LOOP till queue is empty
+			（2）Dequeue front element from the queue
+			（3）Return if the destination coordinates have reached.
+			（4）For each of its four adjacent cells, if the value is 1 or 9 and they are not visited yet, 
+			we enqueue it in the queue and also mark them as visited.
      * LANG
      * @param lot
      * @return
      */
     int row2;int col2;
     public int removeObstacle(int [][]lot){
-    	if (lot==null||lot.length==0||lot[0].length==0) {
+    	if (lot==null||lot.length==0||lot[0].length==0||lot[0][0]==0) {
     		return -1;
     	}
     	if (lot[0][0]==9) {
