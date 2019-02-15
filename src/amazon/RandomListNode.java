@@ -1,4 +1,4 @@
-package amaon;
+package amazon;
 
 public class RandomListNode {
 	int label;
