@@ -16,9 +16,67 @@ public class FiveHightest {
  		n是list of Pairs的长度，只对C语言用户有用
 		id有重复，比如可能有18个1，17个2，等等
 		find the average number of top 5 times for each id. Return with a HashMap(int id, double time)
+		
+		In the hashmap, the key is id, the value is min heap, traversing the list, 
+		and add the product to the value . If the size of the heap exceeds k, it will poll and keep the heap.
+		
+		The result of the hashmap, the key is id, and the value is the average of all products  in the heap.
+		
+		Time complexity:O(nlogk) n is size of list
 	 * LANG
 	 * @param args
 	 */
+	
+	
+	public static void add(PriorityQueue<Product> heap,Product product,int k){
+		heap.add(product);
+		if (heap.size()>k) {
+			heap.poll();
+		}
+	}
+	
+	public static Map<String, Double> getAverage(List<Product> list,int k){
+		Comparator<Product> comparator=new Comparator<Product>() {
+			public int compare(Product p1,Product p2){
+				
+				return p1.getProductRating()-p2.getProductRating();
+				
+			}
+		};
+		//hashmap中key 是id，value是min heap，遍历list，将产品依次加入value的heap中，如果heap的大小超过k，就poll，保持heap
+		
+		HashMap<String, PriorityQueue<Product>> map=new HashMap<>();
+		for (int i = 0; i < list.size(); i++) {
+			Product product=list.get(i);
+			String productId=product.getProductId();
+			if (map.containsKey(productId)) {
+				PriorityQueue<Product> heapPro=map.get(productId);
+				add(heapPro, product, k);
+				
+			}else {
+				
+				PriorityQueue<Product> heap=new PriorityQueue<>(k,comparator);
+				add(heap, product, k);
+				map.put(productId, heap);
+			}
+		}
+		//结果的hashmap，key是id，value是heap中所有产品和的平均数
+		
+		HashMap<String, Double> result=new HashMap<>();
+		for(Entry<String, PriorityQueue<Product>> entry:map.entrySet()){
+			String key=entry.getKey();
+			PriorityQueue<Product> value=entry.getValue();
+//			System.out.println("key:"+key+",value:"+value);
+			double sum=0.0;
+			while(!value.isEmpty()){
+				sum+=value.poll().getProductRating();
+			}
+			result.put(key, Double.valueOf(sum/k));
+		}
+		
+		return result;
+	} 
+	
 	public static void main(String[] args) {
 		List<Product> list=new ArrayList<Product>();
 		Product p1=new Product("1", 5);
@@ -59,51 +117,4 @@ public class FiveHightest {
 		}
 		
 	}
-	
-	public static void add(PriorityQueue<Product> heap,Product product,int k){
-		heap.add(product);
-		if (heap.size()>k) {
-			heap.poll();
-		}
-	}
-	
-	public static Map<String, Double> getAverage(List<Product> list,int k){
-		Comparator<Product> comparator=new Comparator<Product>() {
-			public int compare(Product p1,Product p2){
-				
-				return p1.getProductRating()-p2.getProductRating();
-				
-			}
-		};
-		
-		HashMap<String, PriorityQueue<Product>> map=new HashMap<>();
-		for (int i = 0; i < list.size(); i++) {
-			Product product=list.get(i);
-			String productId=product.getProductId();
-			if (map.containsKey(productId)) {
-				PriorityQueue<Product> heapPro=map.get(productId);
-				add(heapPro, product, k);
-				
-			}else {
-				
-				PriorityQueue<Product> heap=new PriorityQueue<>(k,comparator);
-				add(heap, product, k);
-				map.put(productId, heap);
-			}
-		}
-		
-		HashMap<String, Double> result=new HashMap<>();
-		for(Entry<String, PriorityQueue<Product>> entry:map.entrySet()){
-			String key=entry.getKey();
-			PriorityQueue<Product> value=entry.getValue();
-//			System.out.println("key:"+key+",value:"+value);
-			double sum=0.0;
-			while(!value.isEmpty()){
-				sum+=value.poll().getProductRating();
-			}
-			result.put(key, Double.valueOf(sum/k));
-		}
-		
-		return result;
-	} 
 }

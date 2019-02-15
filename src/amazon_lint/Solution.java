@@ -18,7 +18,7 @@ public class Solution {
 
 	/**
 	 * K-Substring with K different characters
-     * 双指针，O(n)时间法度。
+     * 双指针，Time Complexity:O(n)。
 		i从0开始loop，j也从0开始，但每一个新i的循环，j不返回，继续往前。
 		用一个HashMap来保存当前substring里的字母，找到长度为k且不包含重复字母的substring后，remove i所指的字母，i++，继续寻找
 		保持i不变，j增加，到了k的时候，break掉
@@ -222,6 +222,8 @@ public class Solution {
 	  * if sum=max ,Determine whether the current result is larger than the saved result, 
 	  * yes and update the result
 	  * if sum<=t-30,i++;else j--;
+	  * 
+	  * Time Complexity:O(n)
 	  * LANG
 	  * @param t
 	  * @param dur
@@ -260,6 +262,18 @@ public class Solution {
 	 /**
 	  * 1635. Max Pair
 		给两个数组，给一个最大值，在这两个数组里各找一个组成一对，求其和最接近最大值，但不大于最大值的所有数对
+		使用treeSet是为了可以排序，而且是去重的,使用双指针，i从小到大遍历a，j从大到小遍历b，当sum=a[i]+b[j]>max时，clear set
+		最后遍历set 将结果存入result数组
+		
+		use treeSet to sort, and  de-duplicate. 
+		sort two arrays
+		Using double pointers, i traverses a from small to large, j traverses b from large to small, 
+		when sum=a[i]+b[j]>max, clear set
+		Finally traversing set to store the result in the result array
+		
+		sort:O(aloga+blogb)
+		traverse:O(a+b)
+		Time Complexity:O(aloga+blogb)
 	  * LANG
 	  * @param a
 	  * @param b
@@ -267,7 +281,6 @@ public class Solution {
 	  * @return
 	  */
 	 public static int[][] getAns(int[] a, int[] b, int x) {
-	        // Write your code here.
 		 Arrays.sort(a);
 		 Arrays.sort(b);
 		 int max=0;
@@ -315,10 +328,52 @@ public class Solution {
 		}
 		 return result;
 	 }
+	 
+	 public static int[][] getAns2(int[] a, int[] b, int x) {
+		 Arrays.sort(a);
+		 Arrays.sort(b);
+		 int max=0;
+
+		 List<int[]> list=new ArrayList<>();
+		 int i=0;
+		 int j=b.length-1;
+		 while(i<a.length&&j>=0){
+			 int sum=a[i]+b[j];
+				if (sum<=x) {
+					if (sum>max) {
+						list.clear();
+						max=sum;
+						int []temp={a[i],b[j]};
+						list.add(temp);
+					}
+					if (sum==max) {
+						max=sum;
+						int []temp={a[i],b[j]};
+						list.add(temp);
+					}
+					i++;
+				}else {
+					j--;
+				}
+		 }
+		 
+		 int [][]result=new int[list.size()][];
+		 int k=0;
+		 for (int[] is : list) {
+			 if (k<list.size()) {
+				 result[k]=is;
+				 k++;
+			}
+		}
+		 return result;
+	 }
 	 /**
 	  * 1561. BST Node Distance
 	  * 给定一个integer数组（无序）和2个node值，按给出的数组构建 BST(需要按给定的数组元素顺序，挨个插入树中来构建BST)，找出这两个node在 BST 中的距离
 	  * 如果BST中没有出现这两个节点，返回 -1
+	  * build: O(nlogn) 
+	  * find:O(h) where h is height of Binary Search Tree O(logn)
+	  * Time Complexity:O(nlogn)  n is length of numbers
 	  * LANG
 	  * @param numbers
 	  * @param node1

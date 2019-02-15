@@ -176,56 +176,7 @@ public class Solution {
         System.out.println("The two numbers for which sum is closest to target are "
                 + weights[minPos] + " and " + weights[maxPos]);
     }
-	/**
-	 * 无人机送货
-	 * LANG
-	 * @return
-	 */
-	public static List<List<Integer>> twoSum3(int sum,List<List<Integer>> forwarding 
-			,List<List<Integer>> retrun){
-		Comparator<List<Integer>> comparator=new Comparator<List<Integer>>() {
-			
-			public int compare(List<Integer> list1,List<Integer> list2){
-				return list1.get(1)-list2.get(1);
-			}
-		};
-		Collections.sort(forwarding,comparator);
-		Collections.sort(retrun,comparator);
-		List<List<Integer>> result = new ArrayList<>();
-
-		int maxResult=0;
-		for (int i = forwarding.size()-1; i >=0; i--) {
-			for (int j = retrun.size()-1; j >=0; j--) {
-				int temp=forwarding.get(i).get(1) + retrun.get(j).get(1);
-				if (temp <= sum&&temp>=maxResult) {
-					maxResult=temp;
-					List<Integer> ele = new ArrayList<>();
-					ele.add(forwarding.get(i).get(0));
-					ele.add(retrun.get(j).get(0));
-					result.add(ele);
-				}
-			}
-		}
-		
-		/*list.sort((e1,e2)->e1.get(2)-e2.get(2));
-		int max=list.get(list.size()-1).get(2);
-		add(result, list, list.size()-1);
-		for (int i = list.size()-2; i >0 ; i--) {
-			if (list.get(i).get(2)<max) {
-				break;
-			}else {
-				add(result, list, i);
-			}
-		}*/
-		return result;
-	}
 	
-	public static void add(List<List<Integer>> result,List<List<Integer>> list,int i){
-		List<Integer> ele = new ArrayList<>();
-		ele.add(list.get(i).get(0));
-		ele.add(list.get(i).get(1));
-		result.add(ele);
-	}
 	
 	/**
      * window sum
@@ -426,7 +377,8 @@ public class Solution {
 			i-j=1,dp[j][i]=str[i]==str[j]
 			i-j>1,dp[j][i]=(str[i]==str[j])&&dp[j+1][i-1]
 			dp[j][i]为true时表示索引j到索引i形成的子串为回文子串，且子串起点索引为j,长度为i - j + 1。
-			算法时间复杂度为O(N ^ 2)
+			
+			算法时间复杂度为O(N ^ 2) n is length of string
 			https://www.jianshu.com/p/c82cada7e5b0
 		  * LANG
 		  * @param s
@@ -462,6 +414,13 @@ public class Solution {
 	 /**
 	     * amazon 节点是多个，不仅仅是两个子节点
 	     * 类似于Subtree with Maximum Average
+	     * 
+	     * divide and conquer + traversal. 
+	     * the divide-and-conquer method returns the current value for its father, 
+	     * in the process of each calculation, if its value bigger than global,
+	     * it will be stored in the global variable. Finally, just return the global variable.
+	     * 
+	     * Time complexity:O(n) n is the number of all nodes
 	     */
 	    private static CategoryNode subNode;
 	    private static Result subResult;
@@ -498,14 +457,19 @@ public class Solution {
 	    
 	    /**
          * 长方形相交
-         * 紫色代表矩形A，红色代表矩形B，并分别用p1,p2,p3,p4代表对应的左上角与右下角
+         * 紫色代表矩形A，红色代表矩形B，并分别用p1,p2,p3,p4代表对应的左上角与右下角Up left and down right
          * 不重叠:
          * 即B矩阵，可能在A的左侧、右侧、上侧、下侧。如果用公式表示，即 
+         * Do not overlap:the B matrix may be on the left, the right, the up, and the down of A.
 			(p2.y≤p3.y)∨(p1.y≥p4.y)∨(p2.x≤p3.x)∨(p1.x≥p4.x) 
 			则，两个矩阵重叠时，公式为 
+			Then, when the two matrices overlap, the formula is
 			¬[(p2.y≤p3.y)∨(p1.y≥p4.y)∨(p2.x≤p3.x)∨(p1.x≥p4.x)] 
 			根据德·摩根定律可转换为 
+			According to De Morgan's law, it can be converted to
 			(p2.x>p3.x)∧(p2.y>p3.y)∧(p1.x<p4.x)∧(p1.y<p4.y)
+			
+			Time complexity:O(1)
          */
         
        public boolean isOverlap( Rect rc1, Rect rc2){

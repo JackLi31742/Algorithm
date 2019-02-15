@@ -373,6 +373,7 @@ public class Solution {
 	    		Result cuResult=getResult(cur);
 	    		sumAll+=cuResult.sum;
 	    		sizeAll+=cuResult.size;
+	    		System.out.println("a");
 			}
 	    	
 	    	Result result=new Result(sumAll+root.value, sizeAll+1);
