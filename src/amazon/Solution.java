@@ -411,6 +411,49 @@ public class Solution {
 		    	return s.substring(start,maxlen+start);
 		    }
 		 
+		 /**
+			 * 937. Reorder Log Files
+			 * 字母日志在数字日志前
+			 * Time Complexity: O(AlogA), where A is the total content of logs.
+
+				Space Complexity: O(A).
+			 * LANG
+			 * @param logs
+			 * @return
+			 */
+			public String[] reorderLogFiles(String[] logs) {
+				
+				Comparator<String> comparator=new Comparator<String>() {
+
+					public int compare(String log1, String log2) {
+						//最多分成2个
+						String[] split1 = log1.split(" ", 2);
+						String[] split2 = log2.split(" ", 2);
+						// 第二个是数字还是字母
+						boolean isDigit1 = Character.isDigit(split1[1].charAt(0));
+						boolean isDigit2 = Character.isDigit(split2[1].charAt(0));
+						if (!isDigit1 && !isDigit2) {
+							int com = split1[1].compareTo(split2[1]);
+							if (com != 0) {
+								return com;
+							}
+							return split1[0].compareTo(split2[0]);
+						}
+						if (isDigit1) {
+							if (isDigit2) {
+								return 0;
+							}else {
+								return 1;
+							}
+						}else {
+							return -1;
+						}
+					}
+					
+				};
+				Arrays.sort(logs, comparator);
+		        return logs;
+		    }
 	 /**
 	     * amazon 节点是多个，不仅仅是两个子节点
 	     * 类似于Subtree with Maximum Average
@@ -482,4 +525,43 @@ public class Solution {
             else
                 return false;
         }
+       
+       /**
+        * amazon Maximum Minimum Path
+        * 给一个int[][]的matirx，对于一条从左上到右下的path pi，pi中的最小值是mi，求所有mi中的最大值。只能往下或右.
+        * [8, 4, 7]
+   	   [6, 5, 9]
+   		有3条path：
+   		8-4-7-9 min: 4
+   		8-4-5-9 min: 4
+   		8-6-5-9 min: 5
+   		return: 5
+
+   		time complexity:O(row+col)
+        */
+       
+   	    private int min, max, row6, col6;
+   	    public int maxMinPath(int[][] matrix) {
+   	        row6 = matrix.length;
+   	        col6 = matrix[0].length;
+   	        min = Integer.MAX_VALUE;
+   	        max = Integer.MIN_VALUE;
+   	        dfsHelper(matrix, min, 0, 0);
+   	        return max;
+   	    }
+   	
+   	    public void dfsHelper(int[][] matrix, int min, int i, int j ){                
+   	        if (i >= row6 || j >= col6) return;
+   	        if (i == row6 - 1 && j == col6 - 1) {
+   	            min = Math.min(min, matrix[i][j]);
+   	            max = Math.max(max, min);
+   	            return;
+   	        }
+   	        min = Math.min(min, matrix[i][j]);
+   	        dfsHelper(matrix, min, i, j + 1);
+   	        dfsHelper(matrix, min, i + 1, j);
+   	    }
+   	    
+   	    
+   	    
 }

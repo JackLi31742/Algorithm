@@ -17,7 +17,7 @@ import java.util.TreeSet;
 public class Solution {
 
 	/**
-	 * K-Substring with K different characters
+	 * 1639. K-Substring with K different characters
      * 双指针，Time Complexity:O(n)。
 		i从0开始loop，j也从0开始，但每一个新i的循环，j不返回，继续往前。
 		用一个HashMap来保存当前substring里的字母，找到长度为k且不包含重复字母的substring后，remove i所指的字母，i++，继续寻找
@@ -61,7 +61,115 @@ public class Solution {
         System.out.println(resultSet);
         return resultSet.size();
     }
-    
+    /**
+     * 1639. K-Substring with K different characters
+     * 得用大写A
+     * LANG
+     * @param stringIn
+     * @param K
+     * @return
+     */
+    public static int KSubstring(String stringIn, int K) {
+    	if(stringIn==null||stringIn.length()==0||K==0){
+            return 0;
+        }
+        if(stringIn.length()==1){
+            return 1;
+        }
+//        int reslut=0;
+        int count[]=new int[256];
+//        List<String> list=new ArrayList<>();
+        Set<String> set=new HashSet<>();
+        for (int i=0; i<stringIn.length()-K+1; i++){
+            int disCount=0;
+            Arrays.fill(count,0);
+            for(int j=i;j<i+K;j++){
+                if(count[stringIn.charAt(j)-'A']==0){
+                    disCount++;
+                }
+                count[stringIn.charAt(j)-'A']++;
+                if(disCount==K&&(j-i+1)==K){
+//                    reslut++;
+                    set.add(stringIn.substring(i,j+1));
+                }
+            }
+        } 
+        System.out.println(set);
+        return set.size();
+    }
+    /**
+     * 长度是k，k-1 distinct character
+     * LANG
+     * @param stringIn
+     * @param K
+     * @return
+     */
+    public static List<String> K_1Substring(String stringIn, int K) {
+    	if(stringIn==null||stringIn.length()==0||K==0){
+            return new ArrayList<>();
+        }
+        
+//        int reslut=0;
+        int count[]=new int[256];
+//        List<String> list=new ArrayList<>();
+        Set<String> set=new HashSet<>();
+        for (int i=0; i<stringIn.length()-K+1; i++){
+            int disCount=0;int dup=0;
+            Arrays.fill(count,0);
+            for(int j=i;j<i+K;j++){
+                if(count[stringIn.charAt(j)-'A']==0){
+                    disCount++;
+                }
+                count[stringIn.charAt(j)-'A']++;
+                if (count[stringIn.charAt(j)-'A']>1) {
+					dup++;
+				}
+                if(disCount==K-1&&(j-i+1)==K&&dup==1){
+//                    reslut++;
+                    set.add(stringIn.substring(i,j+1));
+                }
+            }
+        } 
+//        System.out.println(list);
+        return new ArrayList<String>(set);
+    }
+    /**
+     * 长度是k，k-1 distinct character 这个不对
+     * LANG
+     * @param stringIn
+     * @param K
+     * @return
+     */
+    public static List<String> K_1Substring2(String stringIn, int K) {
+        if (stringIn == null || stringIn.length() == 0 || K <= 0) {
+            return new ArrayList<String>();
+        }
+        HashMap<Character, Integer> charMap = new HashMap<>();
+        HashSet<String> resultSet = new HashSet<String>();
+        int len = stringIn.length();
+        int j = 0;int dup=0;
+        for (int i = 0; i < len; i++) {
+        	//当j到了len的时候，i继续向后，缩小了窗口
+            while (j < len && charMap.size() < K) {
+                char c = stringIn.charAt(j);
+                //如果出现过相同的，直接break掉while
+                if (charMap.containsKey(c)) {
+                    dup++;
+                }
+                charMap.put(c, charMap.getOrDefault(c, 0)+1);
+                j++;
+                if (charMap.size() == K-1&&dup==1) {
+                    resultSet.add(stringIn.substring(i, j));
+                }
+            }
+            charMap.put(stringIn.charAt(i), charMap.get(stringIn.charAt(i))-1);
+            if (charMap.get(stringIn.charAt(i))==0) {
+				
+            	charMap.remove(stringIn.charAt(i));
+			}
+        }
+        return new ArrayList<String>(resultSet);
+    }
     /**
 	 * 1562. Number of restaurants
 	 * 给出一个List，里面的数据代表每一个餐厅的坐标[x, y]。顾客的坐标处于原点[0, 0]。
@@ -559,7 +667,12 @@ public class Solution {
 			System.out.println();
 		}*/
     	
-    	int []arr={10,18,12,16,19,13,20,3,1,7,14};
-    	System.out.println(solution.bstDistance(arr, 18, 7));;
+    	/*int []arr={10,18,12,16,19,13,20,3,1,7,14};
+    	System.out.println(solution.bstDistance(arr, 18, 7));;*/
+    	
+    	System.out.println(K_1Substring2("abadabc",3));;
+    	
+//    	System.out.println(KSubstring2("abcabc",3));
+    	
 	}
 }

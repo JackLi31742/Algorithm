@@ -1,5 +1,11 @@
 package string;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -456,7 +462,7 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	    }
 	    
 	    /**
-	     * 
+	     * 这个仅仅是k个不同的字符，没有限制substrings 的长度
 	     * count number of substrings with exactly k unique characters 
 	     * 从第一位开始遍历，找到所有符合的子串，再从第二位开始遍历
 	     * Time Complexity : O(n*n)
@@ -492,11 +498,11 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	            { 
 	                // If this is a new character for this 
 	                // substring, increment dist_count. 
-	                if (cnt[str.charAt(j) - 'a'] == 0) 
+	                if (cnt[str.charAt(j) - 'A'] == 0) 
 	                    dist_count++; 
 	  
 	                // Increment count of current character 
-	                cnt[str.charAt(j) - 'a']++; 
+	                cnt[str.charAt(j) - 'A']++; 
 	  
 	                // If distinct character count becomes k, 
 	                // then increment result. 
@@ -512,7 +518,7 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	    }
 	   
 	   /**
-	     * find the substrings of size K with K distinct characters
+	     * find the substrings of size K with K distinct characters 这个也不对
 	     * Given a string and number K, find the substrings of size K 
 	     * with K distinct characters. If no, output empty list. 
 	     * Remember to emit the duplicate substrings, i.e. if the substring repeated twice, 
@@ -541,11 +547,11 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	            { 
 	                // If this is a new character for this 
 	                // substring, increment dist_count. 
-	                if (cnt[str.charAt(j) - 'a'] == 0) 
+	                if (cnt[str.charAt(j) - 'A'] == 0) 
 	                    dist_count++; 
 	  
 	                // Increment count of current character 
-	                cnt[str.charAt(j) - 'a']++; 
+	                cnt[str.charAt(j) - 'A']++; 
 	  
 	                // If distinct character count becomes k, 
 	                // then increment result. 
@@ -558,7 +564,7 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	        return list; 
 	    }
 	    /**
-	     * 1639. K-Substring with K different characters
+	     * 1639. K-Substring with K different characters  
 	     * 计算长度为K且包含K个不同字符的子串数
 	     * LANG
 	     * @param stringIn
@@ -566,8 +572,7 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	     * @return
 	     */
 	    public static int KSubstring(String stringIn, int K) {
-	        // Write your code here
-	        if(stringIn==null||stringIn.length()==0||K==0){
+	    	if(stringIn==null||stringIn.length()==0||K==0){
 	            return 0;
 	        }
 	        if(stringIn.length()==1){
@@ -577,21 +582,21 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	        int count[]=new int[256];
 //	        List<String> list=new ArrayList<>();
 	        Set<String> set=new HashSet<>();
-	        for (int i=0; i<stringIn.length(); i++){
+	        for (int i=0; i<stringIn.length()-K+1; i++){
 	            int disCount=0;
 	            Arrays.fill(count,0);
-	            for(int j=i;j<stringIn.length();j++){
-	                if(count[stringIn.charAt(j)-'a']==0){
+	            for(int j=i;j<i+K;j++){
+	                if(count[stringIn.charAt(j)-'A']==0){
 	                    disCount++;
 	                }
-	                count[stringIn.charAt(j)-'a']++;
-	                if(disCount==K){
+	                count[stringIn.charAt(j)-'A']++;
+	                if(disCount==K&&(j-i+1)==K){
 //	                    reslut++;
-	                    set.add(stringIn.substring(i,j));
+	                    set.add(stringIn.substring(i,j+1));
 	                }
 	            }
 	        } 
-//	        System.out.println(list);
+	        System.out.println(set);
 	        return set.size();
 	    }
 	    /**
@@ -632,37 +637,7 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	        System.out.println(resultSet);
 	        return resultSet.size();
 	    }
-	    /**
-	     * 1638. Least Substring
-
-	     * 给定一个包含n个小写字母的字符串s，要求将字符串划分成若干个连续子串，子串中的字母类型相同，同时子串的字母个数不超过k，输出最少划分的子串数量
-	     * 输入: s = "aabbbc", k = 3
-			输出: 3
-			解释: 
-			划分成 "aa", "bbb", "c" 三个子串
-			
-			输入: s = "aabbbc", k = 2
-			输出: 4
-			解释:
-			划分成 "aa", "bb", "b", "c" 四个子串
-	     * LANG
-	     * @param s
-	     * @param k
-	     * @return
-	     */
-	    public int getAns(String s, int k) {
-	        // Write your code here
-	         int n = s.length(), ans = 1, cnt = 1;
-	        for (int i = 1; i < n; i++) {
-	            if (s.charAt (i) == s.charAt (i - 1) && cnt < k) {
-	                cnt++;
-	            } else {
-	                ans++;
-	                cnt = 1;
-	            }
-	        }
-	        return ans;
-	    }
+	    
 	    /**
 	     * longest substring with k unique characters 
 	     * https://www.geeksforgeeks.org/find-the-longest-substring-with-k-unique-characters-in-a-given-string/
@@ -786,7 +761,39 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 	        else result = helper(num/1000000000) + " Billion " + helper(num % 1000000000);
 	        return result.trim();
 	    }
-	    public static void main(String[] args) {
+	    
+	    /**
+	     * 1638. Least Substring
+
+	     * 给定一个包含n个小写字母的字符串s，要求将字符串划分成若干个连续子串，子串中的字母类型相同，同时子串的字母个数不超过k，输出最少划分的子串数量
+	     * 输入: s = "aabbbc", k = 3
+			输出: 3
+			解释: 
+			划分成 "aa", "bbb", "c" 三个子串
+			
+			输入: s = "aabbbc", k = 2
+			输出: 4
+			解释:
+			划分成 "aa", "bb", "b", "c" 四个子串
+	     * LANG
+	     * @param s
+	     * @param k
+	     * @return
+	     */
+	    public int getAns(String s, int k) {
+	        // Write your code here
+	         int n = s.length(), ans = 1, cnt = 1;
+	        for (int i = 1; i < n; i++) {
+	            if (s.charAt (i) == s.charAt (i - 1) && cnt < k) {
+	                cnt++;
+	            } else {
+	                ans++;
+	                cnt = 1;
+	            }
+	        }
+	        return ans;
+	    }
+	    public static void main(String[] args) throws Exception {
 //			String s = "pqpqs";int k = 2;
 //			System.out.println(getAllSubtringWithK(s, k));;
 	    	
@@ -796,8 +803,11 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 //	    	
 //	    	System.out.println(mostCommonWord(s,banned));;
 	    	
-	    	String s="abacab";
 	    	
-	    	System.out.println(KSubstring2(s, 3));;
+	    	
+	    	
+	    	
+//	    	System.out.println(KSubstring("", 28));;
+	    	System.out.println((int)'a');
 		}
 }

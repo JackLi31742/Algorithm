@@ -321,6 +321,7 @@ public class Solution {
 		8-6-5-9 min: 5
 		return: 5
 
+		time complexity:O(row+col)
      */
     
 	    private int min, max, row6, col6;
