@@ -147,7 +147,7 @@ public class Solution {
 		return false;
     }
 	
-	public String reverseWords(String s) {
+	/*public String reverseWords(String s) {
 		String[] arr=s.split(" ");
 		String s1="";
 		for (int i = 0; i < arr.length; i++) {
@@ -161,7 +161,7 @@ public class Solution {
 		}
 		return s1;
         
-    }
+    }*/
 	
 	public static void deleteNode(ListNode node,int a) {
         ListNode p=node;
@@ -273,7 +273,7 @@ public class Solution {
 	 * @return
 	 */
 	
-	public static TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+	/*public static TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
 		if (root==null) {
 			return root;
 		}
@@ -290,7 +290,7 @@ public class Solution {
 		}
 		
 		return root;
-	}
+	}*/
 
 	
     
