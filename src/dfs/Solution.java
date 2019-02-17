@@ -311,6 +311,69 @@ public class Solution {
     }
     
     /**
+     * 在迷宫中有一个球，里面有空的空间和墙壁。球可以通过滚上，下，左或右移动，
+		但它不会停止滚动直到撞到墙上。当球停止时，它可以选择下一个方向。
+		
+		给定球的起始位置，目的地和迷宫，确定球是否可以停在终点。
+		
+		迷宫由二维数组表示。1表示墙和0表示空的空间。你可以假设迷宫的边界都是墙。开始和目标坐标用行和列索引表示
+		
+		Time complexity : O(mn). Complete traversal of maze will be done in the worst case. 
+		Here, m and n refers to the number of rows and coloumns of the maze.
+		
+		Space complexity : O(mn). visited array of size m*n is used
+     * LANG
+     * @param maze
+     * @param start
+     * @param destination
+     * @return
+     */
+    int[] deltaX = new int[] {0, 0, -1, 1};
+    int[] deltaY = new int[] {1, -1, 0, 0};
+    
+    public boolean hasPath(int[][] maze, int[] start, int[] destination) {
+        if(maze == null || maze.length == 0 || maze[0].length == 0 
+        		|| start == null || start.length == 0 
+        		|| destination == null || destination.length == 0){
+            return false;
+        }
+        
+        return dfs(maze, start, destination, new boolean[maze.length][maze[0].length]);
+    }
+    
+    private boolean dfs(int[][] maze, int[] start, int[] destination, boolean[][] visited){
+        if(start[0] == destination[0] && start[1] == destination[1]){
+            return true;
+        }
+        
+        int x = start[0], y = start[1];
+        
+        if(!isValid(x, y, maze) || visited[x][y]){
+            return false;
+        }
+        
+        visited[x][y] = true;
+        
+        for(int i = 0; i < 4; i++){
+            int xx = x;
+            int yy = y;
+            
+            while(isValid(xx + deltaX[i], yy + deltaY[i], maze)){
+                xx += deltaX[i];
+                yy += deltaY[i];
+            }
+            if(dfs(maze, new int[]{xx, yy}, destination, visited)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean isValid(int x, int y, int[][] maze){
+        return x >= 0 && x < maze.length && y >= 0 && y < maze[0].length && maze[x][y] == 0;
+    }
+    
+    /**
      * amazon Maximum Minimum Path
      * 给一个int[][]的matirx，对于一条从左上到右下的path pi，pi中的最小值是mi，求所有mi中的最大值。只能往下或右.
      * [8, 4, 7]
