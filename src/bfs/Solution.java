@@ -1,6 +1,7 @@
 package bfs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -302,80 +303,111 @@ public class Solution {
     	
     }
     /**
-     * lintcode 120. Word Ladder
+     * lintcode 120. Word Ladder 词语阶梯
 		leetcode 127. Word Ladder
 		
+		beginWord = “hit” 
+		endWord = “cog” 
+		wordList = [“hot”,”dot”,”dog”,”lot”,”log”]
+		
+		As one shortest transformation is “hit” -> “hot” -> “dot” -> “dog” -> “cog”, 
+		return its length 5.
+
+
+		https://www.cnblogs.com/grandyang/p/4539768.html
+		类似于一棵树，先找到第一个匹配的，然后用26个字母去替换，如果在set中，就加到队列里，然后继续找第二个，
+		每一层都把所有可能结果都加入，这么一层层找下去，如果找到最后没找到，那么step就是0
+		
+		time：26*start.length*wordList.size
      * LANG
      * @param start
      * @param end
      * @param wordList
      * @return
      */
-    public int ladderLength(String start, String end, List<String> wordList) {
-        Set<String> dict = new HashSet<>();
-        for (String word : wordList) {
-            dict.add(word);
-        }
-        
-        if (start.equals(end)) {
-            return 1;
-        }
-        
-        HashSet<String> hash = new HashSet<String>();
-        Queue<String> queue = new LinkedList<String>();
-        queue.offer(start);
-        hash.add(start);
-        
-        int length = 1;
-        while (!queue.isEmpty()) {
-            length++;
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                String word = queue.poll();
-                for (String nextWord: getNextWords(word, dict)) {
-                    if (hash.contains(nextWord)) {
-                        continue;
-                    }
-                    if (nextWord.equals(end)) {
-                        return length;
-                    }
-                    
-                    hash.add(nextWord);
-                    queue.offer(nextWord);
-                }
-            }
-        }
-        
-        return 0;
-    }
+    
+    
+	public int ladderLength(String start, String end, List<String> wordList) {
+		Set<String> set = new HashSet<>(wordList);
+		Queue<String> q = new LinkedList<>();
+		q.offer(start);
+		int step = 1;
+		while (!q.isEmpty()) {
+			int size = q.size();
+			System.out.println("size:"+size);
+			for (int j = 0; j < size; j++) {
+				String cur = q.poll();
+				for (int i = 0; i < end.length(); i++) {
+					for (char letter = 'a'; letter <= 'z'; letter++) {
+						StringBuilder newWord = new StringBuilder(cur);
+						newWord.setCharAt(i, letter);
+						if (set.contains(newWord.toString())) {
+							System.out.println("new:"+newWord);
+							if (newWord.toString().equals(end)) {
+								//因为不执行step++了，所以在这加1
+								return step + 1;
+							}
+							//防止死循环
+							set.remove(newWord.toString());
+							q.offer(newWord.toString());
+						}
+					}
+				}
 
-    // replace character of a string at given index to a given character
-    // return a new string
-    private String replace(String s, int index, char c) {
-        char[] chars = s.toCharArray();
-        chars[index] = c;
-        return new String(chars);
-    }
-    
-    // get connections with given word.
-    // for example, given word = 'hot', dict = {'hot', 'hit', 'hog'}
-    // it will return ['hit', 'hog']
-    private ArrayList<String> getNextWords(String word, Set<String> dict) {
-        ArrayList<String> nextWords = new ArrayList<String>();
-        for (char c = 'a'; c <= 'z'; c++) {
-            for (int i = 0; i < word.length(); i++) {
-                if (c == word.charAt(i)) {
-                    continue;
-                }
-                String nextWord = replace(word, i, c);
-                if (dict.contains(nextWord)) {
-                    nextWords.add(nextWord);
-                }
-            }
+			}
+			step++;
+		}
+		return 0;
+	}
+	/**
+	 * 126. Word Ladder II
+	 * 要找到所有的路径，没有则返回空
+	 * LANG
+	 * @param beginWord
+	 * @param endWord
+	 * @param wordList
+	 * @return
+	 */
+	public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+		List<List<String>> result = new ArrayList<List<String>>();
+        if(beginWord==null||beginWord==""
+        		||endWord==null||endWord==""
+        		||beginWord.length()!=endWord.length()||!wordList.contains(endWord)) {
+            return result;
         }
-        return nextWords;
+		Set<String> set = new HashSet<>(wordList);
+		Queue<String> q = new LinkedList<>();
+		q.offer(beginWord);
+		while (!q.isEmpty()) {
+			int size = q.size();
+			System.out.println("size:"+size);
+			List<String> path = new ArrayList<String>();
+			for (int j = 0; j < size; j++) {
+				String cur = q.poll();
+			     path.add(cur);
+				for (int i = 0; i < endWord.length(); i++) {
+					for (char letter = 'a'; letter <= 'z'; letter++) {
+						StringBuilder newWord = new StringBuilder(cur);
+						newWord.setCharAt(i, letter);
+						if (set.contains(newWord.toString())) {
+							System.out.println("new:"+newWord);
+//							path.add(newWord.toString());
+							result.add(path);
+							if (newWord.toString().equals(endWord)) {
+								//因为不执行step++了，所以在这加1
+								return result;
+							}
+							//防止死循环
+							q.offer(newWord.toString());
+						}
+					}
+				}
+
+			}
+			set.remove(q.peek());
+		}
+		return result;
     }
-    
     public static void main(String[] args) {
 		Solution solution=new Solution();
 		
@@ -407,6 +439,11 @@ public class Solution {
 		Point dest =new Point(1, 2);
 		int dis=solution.getDistance(lot, source, dest);
 		System.out.println(dis);*/
-		System.out.println(solution.removeObstacle(lot));;
+//		System.out.println(solution.removeObstacle(lot));;
+		
+		String begin="hit";
+		String end="cog";
+		String []words={"hot","dot","dog","lot","log","cog"};
+		System.out.println(solution.findLadders(begin, end, Arrays.asList(words)));;
 	}
 }

@@ -62,27 +62,6 @@ public class DFS {
     }  
 }
 
-//位置点的辅助类
-class Point {
-    private int x;
-    private int y;
-    public Point(int xx, int yy){
-        this.x=xx;
-        this.y=yy;
-    }
 
-    public int getX() {
-        return x;
-    }
 
-    public int getY() {
-        return y;
-    }
-
-    @Override
-    public String toString() {
-        return "[" + x +
-                ", "+y+"]";
-    }
-}
 

@@ -119,6 +119,12 @@ public class Solution {
 	}
 
 	/**
+	 * 141. Linked List Cycle
+	 * Given a linked list, determine if it has a cycle in it.
+
+		To represent a cycle in the given linked list, 
+		we use an integer pos which represents the position (0-indexed) 
+		in the linked list where tail connects to. If pos is -1, then there is no cycle in the linked list.
 	 * 是否有环
 	 * LANG
 	 * @param head
@@ -126,7 +132,7 @@ public class Solution {
 	 */
 	public static boolean isLoopList(ListNode head){
 		 
-        if (head == null){
+        if (head == null||head.next==null){
             return false;
         }
  
@@ -148,14 +154,17 @@ public class Solution {
     }
 
 	/**
+	 * 142. Linked List Cycle II
 	 * 链表有环，环的起点在哪里
+	 * https://blog.csdn.net/willduan1/article/details/50938210
 	 * LANG
 	 * @param head
 	 * @return
 	 */
 	public ListNode detectCycle(ListNode head) {
-        if (head == null || head.next == null)
+        if (head == null || head.next == null){
             return null;
+        }
         ListNode slow = head;
         ListNode fast = head;
         ListNode entry = head;
@@ -444,7 +453,10 @@ public class Solution {
 		
 		System.out.println(head.next);
 	}
-	
+	/**
+	 * 按照绝对值排序的链表，按照自然排序
+	 * LANG
+	 */
 	@Test
 	public void sort(){
 		ListNode node1=new ListNode(-14);

@@ -9,41 +9,183 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Solution {
 	
 	/**
-	 * Rotate Matrix
-	 * You are given an n x n 2D matrix representing an image.
-
-		Rotate the image by 90 degrees (clockwise).
-		In the first loop, only the outer side of matrix will be scanned. Inner loop will not.
-Four Points/Values on each side of the matrix are scanned at the same time.
-The loop will only loop along the upper side of the matrix.(Attention: the upper-right corner is one exception.)
-If the length of matrix is n, the loop will scanned from matrix[0][0] to matrix[0][n-1-1].
-If outer side has been scanner, i = i+1, then j = i.
-The maximum of j is hard to understand. But because we scanned the array symmetrically,
-If the minimum of j is i, the maximum value should also n-i - c, here c is a constant.
+	 * 268. Missing Number
+	 * Given an array containing n distinct numbers taken from 0, 1, 2, ..., n,
+	 *  find the one that is missing from the array.
+	 * 
 	 */
-	public void rotate(int[][] matrix) {
-        int n=matrix.length;
-      //If we scan along the upper side, the lower side will also be scanned
-        //Therefore,the maximum value of i will be 2*i<=row -1
-	    for (int i=0; i<n/2; i++){ 
-	    	//The lower bound of j should be the same as i.
-            //If we scan the left side or left side of the inner loop, the right side will also be scanned.
-            //Therefore, the maximum value of j will be as follows
-            //i+1 will be the length of the right side have already been scanned with the corresponding i.
-	        for (int j=i; j<n-i-1; j++) {
-	            int tmp=matrix[i][j];
-	            matrix[i][j]=matrix[n-j-1][i];
-	            matrix[n-j-1][i]=matrix[n-i-1][n-j-1];
-	            matrix[n-i-1][n-j-1]=matrix[j][n-i-1];
-	            matrix[j][n-i-1]=tmp;
-	        }
-	    }
+    
+    /**
+     * 排序
+     */
+	public static int missingNumber(int[] nums) {
+		Arrays.sort(nums);
+
+        // Ensure that n is at the last index
+        if (nums[nums.length-1] != nums.length) {
+            return nums.length;
+        }
+        // Ensure that 0 is at the first index
+        else if (nums[0] != 0) {
+            return 0;
+        }
+
+        // If we get here, then the missing number is on the range (0, n)
+        for (int i = 1; i < nums.length; i++) {
+            int expectedNum = nums[i-1] + 1;
+            if (nums[i] != expectedNum) {
+                return expectedNum;
+            }
+        }
+
+        // Array was not missing any numbers
+        return -1;
     }
+	/**
+	 * hashset Time:O(N),space:O(N)
+	 * 创建set是O(N),for 是O(N),加起来是O(2n)也就是O(N)
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public int missingNumber2(int[] nums) {
+        Set<Integer> numSet = new HashSet<Integer>();
+        for (int num : nums) numSet.add(num);
+
+        int expectedNumCount = nums.length + 1;
+        for (int number = 0; number < expectedNumCount; number++) {
+            if (!numSet.contains(number)) {
+                return number;
+            }
+        }
+        return -1;
+    }
+	/**
+	 * 异或位运算，nums是顺序不重要，因为异或运算是可交换的
+	 * Time:O(n) xor运算n次
+	 * space:O(1)
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public int missingNumber3(int[] nums) {
+        int missing = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            missing ^= i ^ nums[i];
+        }
+        return missing;
+    }
+	/**
+	 * 448. Find All Numbers Disappeared in an Array
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public List<Integer> findDisappearedNumbers(int[] nums) {
+		List<Integer> list = new ArrayList<>();
+
+		Arrays.sort(nums);
+		for (int i = 0; i < nums.length; i++) {
+			if (nums[i] != i + 1) {
+				list.add(i + 1);
+			}
+
+		}
+		return list;
+	}
+	
+	/**
+	 * 287. Find the Duplicate Number
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public int findDuplicate(int[] nums) {
+        Set<Integer> set=new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+			if (set.contains(nums[i])) {
+				return nums[i];
+			}
+			set.add(nums[i]);
+		}
+        return -1;
+    }
+	
+	/**
+	 * 二分法查找,关键就是nums里的成员都是1到n的
+	 */
+	public int findDuplicate2(int[] nums) {
+		int min=0; int max=nums.length-1;
+		while(min<=max){
+			int mid=min+(max-min)/2;
+			int count=0;
+			// 计算总数组中有多少个数小于等于中间数
+			for (int i = 0; i < nums.length; i++) {
+				//所以比较的是用下标去和value比较
+				if (nums[i]<=mid) {
+					count++;
+				}
+			}
+			if (count>mid) {
+				max=mid-1;
+			}else {
+				min=mid+1;
+			}
+		}
+		return min;
+	}
+	/**
+	 * 双指针，类似于142. Linked List Cycle II
+	 * https://segmentfault.com/a/1190000003817671
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public int findDuplicate3(int[] nums) {
+		int slow=0;int fast=0;int entry=0;
+		while(slow<=nums.length-1||fast<=nums.length-1){
+			//走一步
+			slow=nums[slow];
+			//走两步
+			fast=nums[nums[fast]];
+			if (slow==fast) {
+				while(entry!=slow){
+					entry=nums[entry];
+					slow=nums[slow];
+				}
+				return entry;
+			}
+		}
+		return -1;
+	}
+	/**
+	 * 442. Find All Duplicates in an Array
+	 * Given an array of integers, 1 ≤ a[i] ≤ n (n = size of array), some elements appear twice and others appear once.
+
+		Find all the elements that appear twice in this array.
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public List<Integer> findDuplicates(int[] nums) {
+        List<Integer> result=new ArrayList<>();
+        Set<Integer> set=new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+			if (set.contains(nums[i])) {
+				result.add(nums[i]);
+			}
+			set.add(nums[i]);
+		}
+        return result;
+    }
+	 
+	
 	
 
 	/**
@@ -215,8 +357,33 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 		/*int[]nums={9,6,4,2,3,5,7,0,1};
 		missingNumber(nums);*/
 		
-		int[]states={1,1,1,0,1,1,1,1};
-		System.out.println(solution.cellCompete(states, 2));;
+//		int[]states={1,1,1,0,1,1,1,1};
+//		System.out.println(solution.cellCompete(states, 2));;
+		
+		
+		
+		Interval i1=new Interval(65,424);
+		Interval i2=new Interval(351,507);
+		Interval i3=new Interval(314,807);
+		Interval i4=new Interval(387,722);
+		Interval i5=new Interval(19,797);
+		Interval i6=new Interval(259,722);
+		Interval i7=new Interval(165,221);
+		Interval i8=new Interval(136,897);
+		
+		List<Interval> intervals=new ArrayList<>();
+		intervals.add(i1);
+		intervals.add(i2);
+		intervals.add(i3);
+		intervals.add(i4);
+		intervals.add(i5);
+		intervals.add(i6);
+		intervals.add(i7);
+		intervals.add(i8);
+//		System.out.println(solution.minMeetingRooms(intervals));;
+		
+		int []nums={4,3,2,7,8,2,3,1};
+		solution.findDisappearedNumbers(nums);
 		
 	}
 	
@@ -510,174 +677,8 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 	}
 	
 	
-	/**
-	 * Perfect Sum Problem (Print all subsets with given sum)
+ 
 
-		Given an array of integers and a sum, the task is to print all subsets of given array with sum equal to given sum.
-		https://www.geeksforgeeks.org/perfect-sum-problem-print-subsets-given-sum/
-
-		Like previous post, we build a 2D array dp[][] such that dp[i][j] stores true if sum j is possible with array elements from 0 to i.
-		After filling dp[][], we recursively traverse it from dp[n-1][sum]. For cell being traversed, we store path before reaching it and consider two possibilities for the element.
-		1) Element is included in current path.
-		2) Element is not included in current path.
-		
-		Whenever sum becomes 0, we stop the recursive calls and print current path.
-	 */
-	
-	// dp[i][j] is going to store true if sum j is 
-    // possible with array elements from 0 to i. 
-    static boolean[][] dp; 
-       
-    static void display(ArrayList<Integer> v) 
-    { 
-       System.out.println(v); 
-    } 
-       
-    // A recursive function to print all subsets with the 
-    // help of dp[][]. Vector p[] stores current subset. 
-    static void printSubsetsRec(int arr[], int i, int sum,  
-                                         ArrayList<Integer> p) 
-    { 
-        // If we reached end and sum is non-zero. We print 
-        // p[] only if arr[0] is equal to sun OR dp[0][sum] 
-        // is true. 
-        if (i == 0 && sum != 0 && dp[0][sum]) 
-        { 
-            p.add(arr[i]); 
-            display(p); 
-            p.clear(); 
-            return; 
-        } 
-       
-        // If sum becomes 0 
-        if (i == 0 && sum == 0) 
-        { 
-            display(p); 
-            p.clear(); 
-            return; 
-        } 
-       
-        // If given sum can be achieved after ignoring 
-        // current element. 
-        if (dp[i-1][sum]) 
-        { 
-            // Create a new vector to store path 
-            ArrayList<Integer> b = new ArrayList<>(); 
-            b.addAll(p); 
-            printSubsetsRec(arr, i-1, sum, b); 
-        } 
-       
-        // If given sum can be achieved after considering 
-        // current element. 
-        if (sum >= arr[i] && dp[i-1][sum-arr[i]]) 
-        { 
-            p.add(arr[i]); 
-            printSubsetsRec(arr, i-1, sum-arr[i], p); 
-        } 
-    } 
-       
-    // Prints all subsets of arr[0..n-1] with sum 0. 
-    static void printAllSubsets(int arr[], int n, int sum) 
-    { 
-        if (n == 0 || sum < 0) 
-           return; 
-       
-        // Sum 0 can always be achieved with 0 elements 
-        dp = new boolean[n][sum + 1]; 
-        for (int i=0; i<n; ++i) 
-        { 
-            dp[i][0] = true;   
-        } 
-       
-        // Sum arr[0] can be achieved with single element 
-        if (arr[0] <= sum) 
-           dp[0][arr[0]] = true; 
-       
-        // Fill rest of the entries in dp[][] 
-        for (int i = 1; i < n; ++i) 
-            for (int j = 0; j < sum + 1; ++j) 
-                dp[i][j] = (arr[i] <= j) ? (dp[i-1][j] || 
-                                           dp[i-1][j-arr[i]]) 
-                                         : dp[i - 1][j]; 
-        if (dp[n-1][sum] == false) 
-        { 
-            System.out.println("There are no subsets with" +  
-                                                  " sum "+ sum); 
-            return; 
-        } 
-       
-        // Now recursively traverse dp[][] to find all 
-        // paths from dp[n-1][sum] 
-        ArrayList<Integer> p = new ArrayList<>(); 
-        printSubsetsRec(arr, n-1, sum, p); 
-    } 
-	/**
-	 * 268. Missing Number
-	 * Given an array containing n distinct numbers taken from 0, 1, 2, ..., n,
-	 *  find the one that is missing from the array.
-	 * 
-	 */
-    
-    /**
-     * 排序
-     */
-	public static int missingNumber(int[] nums) {
-		Arrays.sort(nums);
-
-        // Ensure that n is at the last index
-        if (nums[nums.length-1] != nums.length) {
-            return nums.length;
-        }
-        // Ensure that 0 is at the first index
-        else if (nums[0] != 0) {
-            return 0;
-        }
-
-        // If we get here, then the missing number is on the range (0, n)
-        for (int i = 1; i < nums.length; i++) {
-            int expectedNum = nums[i-1] + 1;
-            if (nums[i] != expectedNum) {
-                return expectedNum;
-            }
-        }
-
-        // Array was not missing any numbers
-        return -1;
-    }
-	/**
-	 * hashset Time:O(N),space:O(N)
-	 * 创建set是O(N),for 是O(N),加起来是O(2n)也就是O(N)
-	 * LANG
-	 * @param nums
-	 * @return
-	 */
-	public int missingNumber2(int[] nums) {
-        Set<Integer> numSet = new HashSet<Integer>();
-        for (int num : nums) numSet.add(num);
-
-        int expectedNumCount = nums.length + 1;
-        for (int number = 0; number < expectedNumCount; number++) {
-            if (!numSet.contains(number)) {
-                return number;
-            }
-        }
-        return -1;
-    }
-	/**
-	 * 异或位运算，nums是顺序不重要，因为异或运算是可交换的
-	 * Time:O(n) xor运算n次
-	 * space:O(1)
-	 * LANG
-	 * @param nums
-	 * @return
-	 */
-	public int missingNumber3(int[] nums) {
-        int missing = nums.length;
-        for (int i = 0; i < nums.length; i++) {
-            missing ^= i ^ nums[i];
-        }
-        return missing;
-    }
 	/**
 	 * 88. Merge Sorted Array
 	 * 双指针
@@ -728,26 +729,93 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
 		
 		Comparator<Interval> comparator=new Comparator<Interval>() {
 			public int compare(Interval a, Interval b) {
-				return a.start < b.start ? -1 : a.start == b.start ? 0 : 1;
+				return Integer.compare(a.start, b.start);
 			}
 		};
 		Collections.sort(intervals, comparator);
 
-        LinkedList<Interval> merged = new LinkedList<Interval>();
+        LinkedList<Interval> result = new LinkedList<Interval>();
         for (Interval interval : intervals) {
             // if the list of merged intervals is empty or if the current
             // interval does not overlap with the previous, simply append it.
-            if (merged.isEmpty() || merged.getLast().end < interval.start) {
-                merged.add(interval);
+            if (result.isEmpty() || result.getLast().end < interval.start) {
+                result.add(interval);
             }
             // otherwise, there is overlap, so we merge the current and previous intervals.
             else {
-                merged.getLast().end = Math.max(merged.getLast().end, interval.end);
+                result.getLast().end = Math.max(result.getLast().end, interval.end);
             }
         }
 
-        return merged;
+        return result;
     }
+	
+	/**
+	 * lint 920. Meeting Rooms
+	 * 类似于上一题，只是不是合并，看是否有重叠
+	 * LANG
+	 * @param intervals
+	 * @return
+	 */
+	public boolean canAttendMeetings(List<Interval> intervals) {
+		
+		Comparator<Interval> comparator=new Comparator<Interval>() {
+			public int compare(Interval i1,Interval i2){
+				return Integer.compare(i1.start, i2.start);
+			}
+		};
+		
+		Collections.sort(intervals,comparator);
+		
+		for (int i = 1; i < intervals.size(); i++) {
+			if (intervals.get(i).start<intervals.get(i-1).end) {
+				return false;
+			}
+		}
+		return true;
+    }
+	
+	/**
+	 * 919. Meeting Rooms II
+	 * 计算需要几个不同的房间才可以同时进行会议
+	 * 
+	 * 复杂度
+		Time Complexity: O(NlogN)，Space: O(N)。
+		
+		heap
+		因为要知道之前有overlap的最小的end，所以可以用一个min heap。每次检查新的start是否比heap的top元素小，
+		是的话就把保存原来的end，同时放进新的end；否则就放新的end同时poll出原来的，因为没有overlap且新的end较大。
+		最后heap的大小就是需要的房间数。比如：
+		[1, 5], [2, 4], [3, 6], [5, 7]
+		
+		heap: [5]。[2, 4]的start是2，比5小，所以放入4。
+		heap: [4, 5]。接着[3 ,6]的start是3，比4小，所以又放入6。
+		heap: [4, 5, 6]。[5, 7]的start是5，比4大，因此poll出4，放入7。
+		heap: [5, 6, 7]。最后heap的size为3。
+		4被pop出来是因为[2, 4]和[5, 7]公用一个房间，只要放7进去就可以了。
+	 */
+	
+	public int minMeetingRooms(List<Interval> intervals) {
+        // Write your code here
+		
+		Comparator<Interval> comparator=new Comparator<Interval>() {
+			public int compare(Interval a, Interval b) {
+				return Integer.compare(a.start, b.start);
+			}
+		};
+		Collections.sort(intervals, comparator);
+
+		PriorityQueue<Integer> heap=new PriorityQueue<>();
+		heap.offer(intervals.get(0).end);
+		for (int i = 1; i < intervals.size(); i++) {
+			if (heap.peek()<=intervals.get(i).start) {
+				heap.poll();
+			}
+			heap.offer(intervals.get(i).end);
+		}
+		return heap.size();
+    }
+	
 	/**
 	 * 621. Task Scheduler
 	 * 需要最少的任务时间：（最多任务数-1）*（n + 1） + （相同最多任务的任务个数）
@@ -884,6 +952,40 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
         }
         return res;
     }
+    
+    
+    /**
+	 * Rotate Matrix
+	 * You are given an n x n 2D matrix representing an image.
+
+		Rotate the image by 90 degrees (clockwise).
+		In the first loop, only the outer side of matrix will be scanned. Inner loop will not.
+Four Points/Values on each side of the matrix are scanned at the same time.
+The loop will only loop along the upper side of the matrix.(Attention: the upper-right corner is one exception.)
+If the length of matrix is n, the loop will scanned from matrix[0][0] to matrix[0][n-1-1].
+If outer side has been scanner, i = i+1, then j = i.
+The maximum of j is hard to understand. But because we scanned the array symmetrically,
+If the minimum of j is i, the maximum value should also n-i - c, here c is a constant.
+	 */
+	public void rotate(int[][] matrix) {
+        int n=matrix.length;
+      //If we scan along the upper side, the lower side will also be scanned
+        //Therefore,the maximum value of i will be 2*i<=row -1
+	    for (int i=0; i<n/2; i++){ 
+	    	//The lower bound of j should be the same as i.
+            //If we scan the left side or left side of the inner loop, the right side will also be scanned.
+            //Therefore, the maximum value of j will be as follows
+            //i+1 will be the length of the right side have already been scanned with the corresponding i.
+	        for (int j=i; j<n-i-1; j++) {
+	            int tmp=matrix[i][j];
+	            matrix[i][j]=matrix[n-j-1][i];
+	            matrix[n-j-1][i]=matrix[n-i-1][n-j-1];
+	            matrix[n-i-1][n-j-1]=matrix[j][n-i-1];
+	            matrix[j][n-i-1]=tmp;
+	        }
+	    }
+    }
+	
     /**
      * 643. Maximum Average Subarray I
      * Instead of creating a cumulative sum array first, and then traversing over 
@@ -904,17 +1006,17 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
      * @param k
      * @return
      */
-    public double findMaxAverage(int[] nums, int k) {
-    	double sum=0;
-        for(int i=0;i<k;i++)
-            sum+=nums[i];
-        double res=sum;
-        for(int i=k;i<nums.length;i++){
-            sum+=nums[i]-nums[i-k];
-                res=Math.max(res,sum);
-        }
-        return res/k;
-    }
+	public double findMaxAverage(int[] nums, int k) {
+		double sum = 0;
+		for (int i = 0; i < k; i++)
+			sum += nums[i];
+		double res = sum;
+		for (int i = k; i < nums.length; i++) {
+			sum += nums[i] - nums[i - k];
+			res = Math.max(res, sum);
+		}
+		return res / k;
+	}
     
      /**
       * window sum
@@ -983,48 +1085,7 @@ If the minimum of j is i, the maximum value should also n-i - c, here c is a con
             else
                 return false;
         }
-       /**
-        * 数组的最大公约数
-        * LANG
-        * @param ints
-        * @return
-        */
-		public int generalizedGCD(int num, int[] arr) {
-			for (int i : arr) {
-				if (i <= 0) {
-					return -1;
-				}
-			}
-			if (num == 0) {
-				return -1;
-			}
-			if (num == 1) {
-				return arr[0];
-			}
-			int index = 1;
-			int re = arr[0];
-			while (index < num) {
-				re = gcd(re, arr[index]);
-				index++;
-			}
-			return re;
-		}
-	
-		public int gcd(int a, int b) {
-			int t;
-			if (a < b) {
-				t = b;
-				b = a;
-				a = t;
-			}
-			int c = a % b;
-			while (c > 0) {
-				a = b;
-				b = c;
-				c = a % b;
-			}
-			return b;
-		}
+       
 
 		/**
 		 * 如果单元格的两个边上的邻居都是活动的或不活动的，则在第二天，该单元变得不活动。

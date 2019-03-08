@@ -1,9 +1,13 @@
 package dfs;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Solution {
 
@@ -52,6 +56,46 @@ public class Solution {
         
     }
     
+    /**
+     * leetcode 200. Number of Islands
+     * 没有改变原数组
+     */
+    int row3=0; int col3=0;
+    public int numIslands2(char[][] grid) {
+       if (grid==null||grid.length==0||grid[0].length==0) {
+			return 0;
+		}
+    	row3=grid.length;
+    	if (row3!=0) {
+			col3=grid[0].length;
+		}
+    	
+    	boolean[][]visited=new boolean[row3][col3];
+    	
+    	int count=0;
+    	for (int i = 0; i < row3; i++) {
+			for (int j = 0; j < col3; j++) {
+				if (grid[i][j]=='1'&&visited[i][j]==false) {
+					dfs(grid, i, j,visited);
+					count++;
+				}
+			}
+		}
+    	return count; 
+    }
+    
+    public void dfs(char[][] grid,int i, int j,boolean[][]visited){
+    	if (i<0||i>=row3||j<0||j>=col3||grid[i][j]=='0'||visited[i][j]==true) {
+			return ;
+		}
+    	
+    	visited[i][j]=true;
+    	dfs(grid, i+1, j,visited);
+    	dfs(grid, i, j+1,visited);
+    	dfs(grid, i-1, j,visited);
+    	dfs(grid, i, j-1,visited);
+    }
+    
     //广度优先搜索，时间复杂度O(m*n)，空间复杂度复杂度O(m*n)，原始数据保持原样
     
     private int[][] stepArr = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -91,6 +135,151 @@ public class Solution {
             }
         }
     }
+    
+    /**
+     * lintcode 860. Number of Distinct Islands
+     * 
+     * 跟第一个1的坐标比较，组成字符串，利用String的特性去重
+     */
+ 
+    int row9 = 0, col9 = 0;
+    Set<String> set = new HashSet<>();
+    String tmp = "";
+    boolean[][] vis = null;
+    int ix = 0, iy = 0;
+    int[] fx = new int[] { 1, -1, 0, 0 };
+    int[] fy = new int[] { 0, 0, 1, -1 };
+
+    public int numberofDistinctIslands(int[][] grid) {
+    	row9 = grid.length;
+    	col9 = grid[0].length;
+        vis = new boolean[row9][col9];
+        for (int i = 0; i < row9; ++i) {
+            for (int j = 0; j < col9; ++j) {
+                if (grid[i][j] == 1 && !vis[i][j]) {
+                    tmp = "";
+                    ix = i;
+                    iy = j;
+                    dfs(i, j, grid);
+                    set.add(tmp);
+                }
+            }
+        }
+//        System.out.println(set);
+        return set.size();
+    }
+
+    public void dfs(int x, int y, int grid[][]) {
+        vis[x][y] = true;
+//        tmp += "x:"+(x - ix) + ",y:" + (y - iy)+";";
+        tmp += (x - ix) + "" + (y - iy);
+        for (int i = 0; i < 4; ++i) {
+            int nx = x + fx[i], ny = y + fy[i];
+            if (nx < 0 || nx >= row9 || ny < 0 || ny >= col9 || vis[nx][ny] || grid[nx][ny] == 0){
+                continue;
+            }
+            dfs(nx, ny, grid);
+        }
+    }
+    
+    /**
+     * 下边的有的test过不去
+     */
+    int row8=0; int col8=0;
+    public int numberofDistinctIslands2(int[][] grid) {
+    	if (grid==null||grid.length==0||grid[0].length==0) {
+			return 0;
+		}
+    	row8=grid.length;
+    	if (row8!=0) {
+			col8=grid[0].length;
+		}
+    	
+    	boolean[][]visited=new boolean[row8][col8];
+    	
+    	Comparator<Point> pComparator=new Comparator<Point>() {
+
+			@Override
+			public int compare(Point p1, Point p2) {
+				int difx=p1.getX()-p2.getX();
+				if(difx==0){
+					return p1.getY()-p2.getY();
+				}
+				return difx;
+			}
+		};
+    	Comparator<List<Point>> comparator=new Comparator<List<Point>>() {
+
+			public int compare(List<Point> list1, List<Point> list2) {
+//				System.out.println("list1:"+list1);
+//				System.out.println("list2:"+list2);
+				int dif=list1.size()-list2.size();
+				if (dif==0) {
+//					Set<Point> tempSet=new TreeSet<>(pComparator);
+					Set<Point> tempSet=new HashSet<>();
+					for (int i = 0; i < list1.size(); i++) {
+						Point p1=list1.get(i);
+						Point p2=list2.get(i);
+						Point p=new Point(p1.getX()-p2.getX(),p1.getY()-p2.getY());
+						tempSet.add(p);
+					}
+					System.out.println("temp:"+tempSet);
+					if (tempSet.size()==1) {
+						System.out.println("1:");
+						return 0;
+					}else {
+						//问题应该是在这
+						System.out.println("不是1");
+						return 1;
+					}
+				}
+				System.out.println("---------------------------");
+				return dif;
+			}
+    		
+		};
+    	Set<List<Point>> set=new TreeSet<>(comparator);
+    	for (int i = 0; i < row8; i++) {
+			for (int j = 0; j < col8; j++) {
+				if (grid[i][j]==1&&visited[i][j]==false) {
+					List<Point> list=new ArrayList<>();
+					dfs(grid, i, j,visited,list);
+					set.add(list);
+				}
+			}
+		}
+
+
+    	System.out.println(set);
+    	return set.size();
+    }
+    
+    public void dfs(int[][] grid,int i, int j,boolean[][]visited,List<Point> list){
+    	if (i<0||i>=row8||j<0||j>=col8||grid[i][j]==0||visited[i][j]==true) {
+			return ;
+		}
+//    	list.add(new int[]{i,j});
+    	list.add(new Point(i,j));
+    	visited[i][j]=true;
+    	dfs(grid, i+1, j,visited,list);
+    	dfs(grid, i, j+1,visited,list);
+    	dfs(grid, i-1, j,visited,list);
+    	dfs(grid, i, j-1,visited,list);
+    }
+    
+    /**
+     * 804. Number of Distinct Islands II
+     * 除了上边的，翻转，旋转也认为是同一个岛屿
+     * LANG
+     * @param grid
+     * @return
+     */
+    public int numDistinctIslands2(int[][] grid) {
+        // write your code here
+    	return 0;
+    }
+    
+    
     /**
      * 695. Max Area of Island
      * Given a non-empty 2D array grid of 0's and 1's, 
@@ -169,11 +358,58 @@ public class Solution {
     	dfs2(row, col, area, i-1, j-1);
     }
     public static void main(String[] args) {
-		int[][]matrix={{0, 0, 0, 0}, 
-			           {1, 1, 0, 1}, 
-			           {0, 1, 0, 0}, 
-			           {1, 1, 1, 0} 
+		int[][]matrix={{1,1,0,1,1}, 
+			           {1,0,0,0,0}, 
+			           {0,0,0,0,1}, 
+			           {1,1,0,1,1} 
 	        }; ;
+	        
+	       /* int[][]matrix={{0,0,1,0,1,1,0,0,1,1,1,0,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1}, 
+			        		{0,1,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,1,0,0,1,1,0,1,1,0,1,0,0,1,0,0,1}, 
+			        		{0,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,1,1,0,0,0,0,1,0,1,1,0,1,1,0,0,1,1,0},
+			        		{0,0,0,1,1,0,1,1,1,0,1,0,1,0,0,1,0,1,1,0,0,1,0,0,1,1,0,1,1,0,0,0,0,0,1,0,0,1,0,1,1,0},
+			        		{0,1,1,0,1,1,1,1,1,0,0,1,0,1,0,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,1,1,1,1,0,1,1,0,1,1,0,1},
+			        		{0,1,0,1,1,0,0,1,1,1,0,0,0,0,1,0,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,0,0,0,1,1,0,0,0,1,1,0},
+			        		{0,0,0,0,0,0,0,1,0,1,1,0,1,0,0,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,0,1,0,1},
+			        		{1,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,1,1,0,0,1,0,1,0,1,1,0,0,1,1,0,1},
+			        		{0,0,0,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,0,1,0,0,0,0,0,0,0,0,1},
+			        		{1,0,1,1,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,0,0,1,1,0,1,1,0,1,1,0,1,0,0},
+			        		{0,0,0,1,0,0,0,1,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0,1,0,0,1,0,1,1,1,1,1,0,1,0,1,0,0,1,0,0},
+			        		{0,0,1,1,1,0,0,1,0,1,1,1,1,0,0,1,0,0,0,1,0,0,1,1,1,0,0,1,1,1,0,0,1,0,1,0,1,0,0,0,0,1},
+			        		{1,0,0,0,0,0,1,0,0,1,1,0,1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,1,1,1,0,1,1,1,0,0,0,0,0,1,0},
+			        		{1,1,1,0,0,1,0,1,0,1,1,1,1,0,0,0,1,1,0,0,1,0,0,0,0,1,1,1,1,0,0,1,0,0,1,1,1,0,1,1,0,0},
+			        		{0,1,0,0,1,0,0,1,1,1,1,1,1,0,1,1,1,1,0,0,0,1,0,1,0,0,0,0,1,0,1,1,1,0,1,1,1,1,1,0,1,0},
+			        		{1,1,1,0,0,0,1,1,1,1,0,1,1,0,1,0,0,0,1,0,1,1,1,1,0,0,0,0,0,1,1,1,0,0,1,0,1,1,1,0,0,0},
+			        		{1,1,1,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,1,0,0,0,0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,0,0,1,0},
+			        		{0,0,1,0,0,1,1,1,1,1,0,0,0,1,1,0,0,1,0,1,0,0,0,0,1,0,1,1,1,1,1,1,0,1,0,0,1,1,1,0,0,1},
+			        		{1,0,0,0,0,1,1,1,0,0,1,1,0,1,0,1,0,0,0,1,1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,1,1,0,0,0},
+			        		{1,1,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0,0,1,0,0,0,1,0,1,0,0,0,0,1,0,0,0,1,1,0,1},
+			        		{0,0,0,1,0,1,1,1,1,0,1,0,1,0,1,0,1,1,0,0,1,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,1,1,1,1,1},
+			        		{0,0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,0,1,1,1,0,0,1,1},
+			        		{0,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,1,1,0,1,1,0,1},
+			        		{0,1,1,1,0,0,1,0,0,1,0,0,1,0,1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,1,0,1,1,1,0,1,0,1,0,1,0,1},
+			        		{1,1,0,1,0,1,1,1,1,0,0,0,0,1,0,0,0,1,1,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1,1,0,0},
+			        		{0,1,1,0,0,1,0,1,0,1,1,0,0,1,0,1,1,1,1,1,1,1,0,1,0,0,0,1,0,0,0,1,1,0,1,1,1,1,0,1,0,0},
+			        		{1,0,0,0,0,1,0,1,1,1,1,1,0,0,1,1,0,1,0,0,0,1,0,1,0,0,1,0,1,1,1,1,0,0,0,1,0,0,0,1,0,0},
+			        		{1,0,1,0,0,1,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,0,1,0,1,0,1,1,0,1,1,1,0,1,0,1,0,1,1,0,1},
+			        		{0,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,0,0,1,0,1,0,1,1,0,0,1,0,1,1,0,0,1,0,0,1,0,1},
+			        		{1,1,0,0,1,0,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1,1,0,1,1,0,1,1,0,0,1,1,1,1,1,0,0,1,1},
+			        		{0,1,0,0,1,1,1,1,1,0,1,0,0,1,0,1,0,1,0,0,1,0,0,1,1,1,1,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0},
+			        		{0,1,1,0,1,1,1,1,1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,0,0,1,1,0,0,1,0,1,1,0,0,1,1,0,0,1,1,1},
+			        		{1,1,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,1,0,1,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,1,1,0},
+			        		{1,1,0,0,1,1,1,0,1,1,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,1,1,0,1,1,1,0,1,0,0,0,0,1,0,0,0},
+			        		{1,0,1,0,1,1,0,1,1,1,1,0,0,1,0,0,1,0,1,0,1,1,1,0,1,1,1,1,0,1,0,0,1,1,0,0,1,1,0,1,0,1},
+			        		{1,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,1,1,1,0,0,1,0,0,0,1,1,0,1,1,0,1,0,1,1,1,0,0,1,1,1,1},
+			        		{1,0,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,0,1,1,0,1,1,1,1,0,1,0,0,0,0,1,1,1,1,0,1,1,1,0,1,1},
+			        		{1,1,1,0,1,0,1,1,1,1,0,1,1,1,1,1,1,0,0,0,1,0,1,0,0,0,1,0,0,1,1,1,0,0,0,1,0,0,0,1,1,0},
+			        		{1,0,0,1,0,0,0,0,0,1,1,1,0,0,0,0,1,0,1,1,1,0,1,0,0,0,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,0},
+			        		{0,1,0,1,1,1,0,1,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0},
+			        		{1,1,0,0,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,0,0,1,1},
+			        		{0,1,1,0,1,0,0,0,1,0,0,1,1,1,0,1,1,0,1,0,1,0,0,0,0,0,0,1,0,1,1,0,1,0,0,0,0,1,0,1,1,0},
+			        		{0,1,0,0,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,0,0,1,0,0,0,1,1,1,1,0,0,1,1,0,1,0,0,1,1,0,0,0},
+			        		{0,1,1,0,1,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,0,0,1,0,1,1,1,0,1,1,1,1,0,0,1,0,1,0,1,0,0},
+			        		{0,1,1,1,0,1,0,0,1,1,0,0,0,0,1,0,1,1,0,0,1,0,0,0,0,0,0,1,1,1,0,0,1,1,1,1,1,0,1,0,0,1}
+	        }; ;*/
 		
 		Solution solution=new Solution();
 		/*int [][]result=solution.routMaze(matrix);
@@ -185,6 +421,7 @@ public class Solution {
 	            System.out.println(); 
 	        } */
 		
+		System.out.println(solution.numberofDistinctIslands2(matrix));;
 		char[][]whiteAndBlack={{'W','W','B','W','B','B','W','W'},
 				{'W','W','B','B','W','W','W','B'},
 				{'B','W','W','B','B','B','W','B'},
@@ -196,7 +433,7 @@ public class Solution {
 		
 		int [][]maze={{8,4,7},{6,5,9}};
 		
-		System.out.println(solution.maxMinPath(maze));
+//		System.out.println(solution.maxMinPath(maze));
 	}
 	/**
 	 * 542. 01 Matrix

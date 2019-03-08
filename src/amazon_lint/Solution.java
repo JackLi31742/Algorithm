@@ -388,7 +388,7 @@ public class Solution {
 	  * @param x
 	  * @return
 	  */
-	 public static int[][] getAns(int[] a, int[] b, int x) {
+	 public int[][] getAns(int[] a, int[] b, int x) {
 		 Arrays.sort(a);
 		 Arrays.sort(b);
 		 int max=0;
@@ -408,14 +408,15 @@ public class Solution {
 		 int j=b.length-1;
 		 while(i<a.length&&j>=0){
 			 int sum=a[i]+b[j];
+//			 System.out.println("a["+i+"]:"+a[i]+",b["+j+"]:"+b[j]+",sum:"+sum);
 				if (sum<=x) {
-					if (sum>max) {
-						set.clear();
-						max=sum;
+					if (sum==max) {
+//						max=sum;
 						int []temp={a[i],b[j]};
 						set.add(temp);
 					}
-					if (sum==max) {
+					if (sum>max) {
+						set.clear();
 						max=sum;
 						int []temp={a[i],b[j]};
 						set.add(temp);
@@ -434,47 +435,78 @@ public class Solution {
 				 k++;
 			}
 		}
+//		 System.out.println("-------------------");
+//		 for (int k2 = 0; k2 < result.length; k2++) {
+//			for (int l = 0; l < result[0].length; l++) {
+//				System.out.print(result[k2][l]+",");
+//			}
+//			System.out.println();
+//		}
 		 return result;
 	 }
 	 
-	 public static int[][] getAns2(int[] a, int[] b, int x) {
-		 Arrays.sort(a);
-		 Arrays.sort(b);
-		 int max=0;
-
-		 List<int[]> list=new ArrayList<>();
-		 int i=0;
-		 int j=b.length-1;
-		 while(i<a.length&&j>=0){
-			 int sum=a[i]+b[j];
-				if (sum<=x) {
-					if (sum>max) {
-						list.clear();
-						max=sum;
-						int []temp={a[i],b[j]};
-						list.add(temp);
-					}
-					if (sum==max) {
-						max=sum;
-						int []temp={a[i],b[j]};
-						list.add(temp);
-					}
-					i++;
-				}else {
-					j--;
-				}
-		 }
+	 /**
+	  * 双循环 ，Time Limit Exceeded
+	  * LANG
+	  * @param a
+	  * @param b
+	  * @param x
+	  * @return
+	  */
+	 public int[][] getAns2(int[] a, int[] b, int x) {
 		 
-		 int [][]result=new int[list.size()][];
-		 int k=0;
-		 for (int[] is : list) {
-			 if (k<list.size()) {
-				 result[k]=is;
-				 k++;
+		 int max=0;
+		 Comparator<int[]> comparator=new Comparator<int[]>() {
+			 public int compare(int[] o1,int[]o2){
+				 
+				 int com0=Integer.compare(o1[0], o2[0]);
+				 if (com0!=0) {
+					 return com0;
+				 }else {
+					 return Integer.compare(o1[1], o2[1]);
+				 }
+			 }
+		 };
+		 Set<int[]> set=new TreeSet<>(comparator);
+		 for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < b.length; j++) {
+				int sum=a[i]+b[j];
+//				 System.out.println("a["+i+"]:"+a[i]+",b["+j+"]:"+b[j]+",sum:"+sum);
+				 if (sum<=x) {
+					 if (sum==max) {
+						 int []temp={a[i],b[j]};
+						 set.add(temp);
+					 }
+					 if (sum>max) {
+						 set.clear();
+						 max=sum;
+						 int []temp={a[i],b[j]};
+						 set.add(temp);
+					 }
+				 }
 			}
 		}
+		 
+		 int [][]result=new int[set.size()][];
+		 int k=0;
+		 for (int[] is : set) {
+			 if (k<set.size()) {
+				 result[k]=is;
+				 k++;
+			 }
+		 }
+//		 System.out.println("-------------------");
+//		 for (int k2 = 0; k2 < result.length; k2++) {
+//			for (int l = 0; l < result[0].length; l++) {
+//				System.out.print(result[k2][l]+",");
+//			}
+//			System.out.println();
+//		}
 		 return result;
 	 }
+	 
+	 
+	 
 	 /**
 	  * 1561. BST Node Distance
 	  * 给定一个integer数组（无序）和2个node值，按给出的数组构建 BST(需要按给定的数组元素顺序，挨个插入树中来构建BST)，找出这两个node在 BST 中的距离
@@ -670,9 +702,16 @@ public class Solution {
     	/*int []arr={10,18,12,16,19,13,20,3,1,7,14};
     	System.out.println(solution.bstDistance(arr, 18, 7));;*/
     	
-    	System.out.println(K_1Substring2("abadabc",3));;
+//    	System.out.println(K_1Substring2("abadabc",3));;
     	
 //    	System.out.println(KSubstring2("abcabc",3));
     	
+    	int[]a={6,5,4,5,6,7,8,3};
+    	int []b={5,3,4,2,1,9,5,3,6,7,8};
+    	
+    	solution.getAns(a, b, 11);
+    	
+    	System.out.println("--------------------------");
+    	solution.getAns2(a, b, 11);
 	}
 }
