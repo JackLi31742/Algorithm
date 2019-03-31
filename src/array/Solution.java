@@ -83,21 +83,30 @@ public class Solution {
     }
 	/**
 	 * 448. Find All Numbers Disappeared in an Array
+	 * Given an array of integers where 1 ≤ a[i] ≤ n (n = size of array), 
+	 * some elements appear twice and others appear once.
+
+		Find all the elements of [1, n] inclusive that do not appear in this array.
+		
+		和442. Find All Duplicates in an Array的第二种方法类似，但是没怎么看懂
 	 * LANG
 	 * @param nums
 	 * @return
 	 */
 	public List<Integer> findDisappearedNumbers(int[] nums) {
-		List<Integer> list = new ArrayList<>();
-
-		Arrays.sort(nums);
-		for (int i = 0; i < nums.length; i++) {
-			if (nums[i] != i + 1) {
-				list.add(i + 1);
-			}
-
+		int length=nums.length;
+		List<Integer> result=new ArrayList<>();
+		for (int i = 0; i < length; i++) {
+			int index=(nums[i]-1)%length;
+			nums[index]+=length;
 		}
-		return list;
+		for (int i = 0; i < length; i++) {
+			if (nums[i]<=length) {
+				//加1是因为之前index是-1得到的
+				result.add(i+1);
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -169,6 +178,8 @@ public class Solution {
 	 * Given an array of integers, 1 ≤ a[i] ≤ n (n = size of array), some elements appear twice and others appear once.
 
 		Find all the elements that appear twice in this array.
+		
+		辅助空间用太多了
 	 * LANG
 	 * @param nums
 	 * @return
@@ -185,8 +196,29 @@ public class Solution {
         return result;
     }
 	 
-	
-	
+	/**
+	 * 有重复的话，对应的index就会增加length的数量
+	 * https://www.geeksforgeeks.org/duplicates-array-using-o1-extra-space-set-2/
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public List<Integer> findDuplicates2(int[] nums) {
+		int length=nums.length;
+		List<Integer> result=new ArrayList<>();
+		for (int i = 0; i < length; i++) {
+			int index=(nums[i]-1)%length;
+			nums[index]+=length;
+		}
+		for (int i = 0; i < length; i++) {
+			//用乘法，除法的话，会得到2就不是大于2了
+			if (nums[i]>2*length) {
+				//加1是因为之前index是-1得到的
+				result.add(i+1);
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * 169. Majority Element
@@ -388,7 +420,7 @@ public class Solution {
 	}
 	
 	/**
-	 *  658. Find K Closest Elements
+	 *  LeetCode 658. Find K Closest Elements
 	 *  https://blog.csdn.net/thesnowboy_2/article/details/77441914
 	 *  直接返回需要的k个数字的最左的下标，首先初始化left=0，right=arr.size()-k，保证在二分过程中不会越界，
 	 *  每次比较arr[mid]和arr[mid+k]哪个离x近，如果arr[mid+k]近，那么意味着如下不变约束成立：
@@ -470,6 +502,8 @@ public class Solution {
 		}
 		return disCom;
 	}
+	
+	
 	/**
 	 * 寻找sort数组中重复数组key第一个出现的位置
 	 * LANG

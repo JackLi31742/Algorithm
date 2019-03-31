@@ -1,6 +1,7 @@
 package dfs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -275,8 +276,79 @@ public class Solution {
      * @return
      */
     public int numDistinctIslands2(int[][] grid) {
-        // write your code here
-    	return 0;
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        int m = grid.length, n = grid[0].length;
+        Set<String> res = new HashSet<>();
+        
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid[i][j] == 1) {
+                    List<Point> island = new ArrayList<>();
+                    dfs(grid, i, j, island);
+                    res.add(getUnique(island));
+                }
+            }
+        }
+        
+        return res.size();
+    }
+    
+    private void dfs(int[][]grid, int x, int y, List<Point> island) {
+        int m = grid.length, n = grid[0].length;
+        
+        island.add(new Point(x, y));
+        grid[x][y] = 0;
+        
+        int[] dirs = {-1, 0, 1, 0, -1};
+        for (int i = 0; i < 4; ++i) {
+            int _x = x + dirs[i], _y = y + dirs[i + 1];
+            if (_x >= 0 && _x < m && _y >= 0 && _y < n && grid[_x][_y] == 1) {
+                dfs(grid, _x, _y, island);
+            }
+        }
+    }
+    
+    private String getUnique(List<Point> island) {
+        List<String> sameIslands = new ArrayList<>();
+        
+        int[][] trans={{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+        
+        for (int i = 0; i < 4; ++i) {
+            List<Point> l1 = new ArrayList<>(), l2 = new ArrayList<>();
+            
+            for (Point point : island) {
+                int x = point.x, y = point.y;
+                l1.add(new Point(x * trans[i][0], y * trans[i][1]));
+                l2.add(new Point(y * trans[i][0], x * trans[i][1]));
+            }
+            sameIslands.add(getStr(l1));
+            sameIslands.add(getStr(l2));
+        }
+        
+        Collections.sort(sameIslands);
+        return sameIslands.get(0);
+    }
+    
+    private String getStr(List<Point> island) {
+        
+        Collections.sort(island, new Comparator<Point>() {
+            public int compare(Point a, Point b) {
+                if (a.x != b.x) {
+                    return a.x - b.x;
+                }
+                return a.y - b.y;
+            }
+        });
+        
+        StringBuilder sb = new StringBuilder();
+        int x = island.get(0).x, y = island.get(0).y;
+        
+        for (Point point : island) {
+            sb.append((point.x - x) + " " + (point.y - y) + " ");
+        }
+        return sb.toString();
     }
     
     
@@ -421,7 +493,7 @@ public class Solution {
 	            System.out.println(); 
 	        } */
 		
-		System.out.println(solution.numberofDistinctIslands2(matrix));;
+		System.out.println(solution.numDistinctIslands2(matrix));;
 		char[][]whiteAndBlack={{'W','W','B','W','B','B','W','W'},
 				{'W','W','B','B','W','W','W','B'},
 				{'B','W','W','B','B','B','W','B'},
