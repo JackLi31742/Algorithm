@@ -15,6 +15,18 @@ import java.util.Set;
 public class Solution {
 	
 	/**
+	 * 4. Median of Two Sorted Arrays
+	 * LANG
+	 * @param nums1
+	 * @param nums2
+	 * @return
+	 */
+	
+	public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        return 0;
+    }
+
+	/**
 	 * 268. Missing Number
 	 * Given an array containing n distinct numbers taken from 0, 1, 2, ..., n,
 	 *  find the one that is missing from the array.
@@ -414,8 +426,10 @@ public class Solution {
 		intervals.add(i8);
 //		System.out.println(solution.minMeetingRooms(intervals));;
 		
-		int []nums={4,3,2,7,8,2,3,1};
-		solution.findDisappearedNumbers(nums);
+//		int []nums={4,3,2,7,8,2,3,1};
+//		solution.findDisappearedNumbers(nums);
+		
+		
 		
 	}
 	
@@ -545,174 +559,7 @@ public class Solution {
 		return -(low+1);
 	}
 	
-	/**
-	 * 1. Two Sum
-	 * LANG
-	 * @param nums
-	 * @param target
-	 * @return
-	 */
-	public int[] twoSum(int[] nums, int target) {
-        int result[]=new int[2];
-        Map<Integer, Integer> map=new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-			if (map.containsKey(target-nums[i])) {
-				result[0]=i;
-				result[1]=map.get(target-nums[i]);
-				return result;
-			}
-			map.put(nums[i], i);
-		}
-        return result;
-    }
-	/**
-	 * 167. Two Sum II - Input array is sorted
-	 * LANG
-	 * @param numbers
-	 * @param target
-	 * @return
-	 */
 	
-	public int[] twoSum2(int[] numbers, int target) {
-		int result[]=new int[2];
-        Map<Integer, Integer> map=new HashMap<>();
-        for (int i = 0; i < numbers.length; i++) {
-			if (map.containsKey(target-numbers[i])) {
-				result[0]=map.get(target-numbers[i]);
-				result[1]=i+1;
-				return result;
-			}
-			map.put(numbers[i], i+1);
-		}
-        return result;
-    }
-	/**
-	 * 上题的双指针
-	 * LANG
-	 * @param capacity
-	 * @param weights
-	 * @param numOfContainers
-	 */
-	public static void findOptimalWeights(double capacity, double[] weights, int numOfContainers){
-        double min = 0.0;
-        int minPos = 0;
-        int maxPos = weights.length - 1;
-        int i =0 , j =weights.length-1;
-
-        Arrays.sort(weights);
-
-        while(i < j){
-            double sum = weights[i] + weights[j];
-
-            if(sum > min && sum <= capacity){
-                min = sum;
-                minPos = i;
-                maxPos = j;
-            }
-
-            if(sum > capacity){
-                j--;
-            }else {
-                i++;
-            }
-        }
-
-        System.out.println("The two numbers for which sum is closest to target are "
-                + weights[minPos] + " and " + weights[maxPos]);
-    }
-	/**
-	 * 无人机送货
-	 * LANG
-	 * @return
-	 */
-	public static List<List<Integer>> twoSum3(int sum,List<List<Integer>> forwarding 
-			,List<List<Integer>> retrun){
-		Comparator<List<Integer>> comparator=new Comparator<List<Integer>>() {
-			
-			public int compare(List<Integer> list1,List<Integer> list2){
-				return list1.get(1)-list2.get(1);
-			}
-		};
-		Collections.sort(forwarding,comparator);
-		Collections.sort(retrun,comparator);
-		List<List<Integer>> result = new ArrayList<>();
-
-		int maxResult=0;
-		for (int i = forwarding.size()-1; i >=0; i--) {
-			for (int j = retrun.size()-1; j >=0; j--) {
-				int temp=forwarding.get(i).get(1) + retrun.get(j).get(1);
-				if (temp <= sum&&temp>=maxResult) {
-					maxResult=temp;
-					List<Integer> ele = new ArrayList<>();
-					ele.add(forwarding.get(i).get(0));
-					ele.add(retrun.get(j).get(0));
-					result.add(ele);
-				}
-			}
-		}
-		
-		/*list.sort((e1,e2)->e1.get(2)-e2.get(2));
-		int max=list.get(list.size()-1).get(2);
-		add(result, list, list.size()-1);
-		for (int i = list.size()-2; i >0 ; i--) {
-			if (list.get(i).get(2)<max) {
-				break;
-			}else {
-				add(result, list, i);
-			}
-		}*/
-		return result;
-	}
-	
-	public static void add(List<List<Integer>> result,List<List<Integer>> list,int i){
-		List<Integer> ele = new ArrayList<>();
-		ele.add(list.get(i).get(0));
-		ele.add(list.get(i).get(1));
-		result.add(ele);
-	}
-	/**
-	 * 双指针无人机送货 没做出来
-	 * LANG
-	 * @param sum
-	 * @param forwarding
-	 * @param retrun
-	 * @return
-	 */
-	public static List<List<Integer>> twoSum4(int capacity,List<List<Integer>> forwarding 
-			,List<List<Integer>> retrun){
-		Comparator<List<Integer>> comparator=new Comparator<List<Integer>>() {
-			
-			public int compare(List<Integer> list1,List<Integer> list2){
-				return list1.get(1)-list2.get(1);
-			}
-		};
-		Collections.sort(forwarding,comparator);
-		Collections.sort(retrun,comparator);
-		int dis=Integer.MAX_VALUE;
-		int minPos1=0; 
-		int maxPos2=retrun.size()-1;
-		int resPos1=0;int resPos2=0;
-		List<List<Integer>> result = new ArrayList<>();
-		while(minPos1<forwarding.size()&&maxPos2>=0){
-			int sum=forwarding.get(minPos1).get(1)+retrun.get(maxPos2).get(1);
-			if (Math.abs(sum-capacity)<dis) {
-				resPos1=minPos1;
-				resPos2=maxPos2;
-				dis=Math.abs(sum-capacity);
-			}
-			if (sum>capacity) {
-				maxPos2--;
-			}else {
-				minPos1++;
-			}
-		}
-		
-		return null;
-	}
-	
-	
- 
-
 	/**
 	 * 88. Merge Sorted Array
 	 * 双指针
