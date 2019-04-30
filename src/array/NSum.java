@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.org.apache.xml.internal.security.algorithms.implementations.IntegrityHmac;
+
 public class NSum {
 
 	/**
@@ -328,51 +330,59 @@ public class NSum {
 	 * 18. 4Sum
 	 * a + b + c + d = target?
 	 * The solution set must not contain duplicate quadruplets.
+	 * 
+	 * http://www.cnblogs.com/strugglion/p/6412116.html
 	 * LANG
 	 * @param nums
 	 * @param target
 	 * @return
 	 */
 	public List<List<Integer>> fourSum(int[] nums, int target) {
-		List<List<Integer>> result=new ArrayList<>();
-		if (nums!=null) {
-			int len=nums.length;
-			if (len>0) {
-				Arrays.sort(nums);
-				Map<Integer, List<List<Integer>>> map=new HashMap<>();
-				int sum=0;
-				for (int i = 0; i < len; i++) {
-					if (i>0&&nums[i]==nums[i-1]) {
-						continue;
-					}
- 					for (int j = i+1; j < len; j++) {
- 						if ((j-i>1)&&(nums[j]==nums[j-1])) {
-							continue;
-						}
-						sum=nums[i]+nums[j];
-						
-						if (map.containsKey(sum)) {
-							map.get(sum).add(Arrays.asList(nums[i],nums[j]));
-						}else {
-							List<List<Integer>> pair=new ArrayList<>();
-							pair.add(Arrays.asList(nums[i],nums[j]));
-							map.put(sum, pair);
-						}
-					}
+		List<List<Integer>> result = new ArrayList<>();
+		if (nums == null || nums.length < 4) {
+			return result;
+		}
+		int len = nums.length;
+		Arrays.sort(nums);
+		Map<Integer, List<List<Integer>>> map = new HashMap<>();
+		int sum = 0;
+		for (int i = 0; i < len; i++) {
+//			if (i > 0 && nums[i] == nums[i - 1]) {
+//				continue;
+//			}
+			for (int j = i + 1; j < len; j++) {
+//				if ((j - i > 1) && (nums[j] == nums[j - 1])) {
+//					continue;
+//				}
+				sum = nums[i] + nums[j];
+
+				if (map.containsKey(sum)) {
+					map.get(sum).add(Arrays.asList(i, j));
+				} else {
+					List<List<Integer>> pair = new ArrayList<>();
+					pair.add(Arrays.asList(i, j));
+					map.put(sum, pair);
 				}
-				
-				Set<Integer> keys=map.keySet();
-				for (Integer key : keys) {
-					if (map.containsKey(target-key)) {
-						
-						List<List<Integer>> value1=map.get(target-key);
-						List<List<Integer>> value2=map.get(key);
-						
-						for (int k = 0; k < value1.size(); k++) {
-							for (int i = 0; i < value2.size(); i++) {
-								List<Integer> temp=new ArrayList<>();
-								temp.addAll(value1.get(k));
-								temp.addAll(value2.get(i));
+			}
+		}
+
+		Set<Integer> keys = map.keySet();
+		for (Integer key : keys) {
+			if (map.containsKey(target - key)) {
+
+				List<List<Integer>> value1 = map.get(key);
+				List<List<Integer>> value2 = map.get(target - key);
+				for (int i = 0; i < value1.size(); i++) {
+					for (int j = 0; j < value2.size(); j++) {
+						List<Integer> v1 = value1.get(i);
+						List<Integer> v2 = value2.get(j);
+						if (v1.get(1) < v2.get(0) ) {
+							List<Integer> temp = new ArrayList<>();
+							temp.add(nums[v1.get(0)]);
+							temp.add(nums[v1.get(1)]);
+							temp.add(nums[v2.get(0)]);
+							temp.add(nums[v2.get(1)]);
+							if (!result.contains(temp)) {
 								result.add(temp);
 							}
 						}
@@ -383,7 +393,106 @@ public class NSum {
 		return result;
     }
 
+	/**
+	 * 18. 4Sum
+	 * 规约到2sum
+	 * LANG
+	 * @param nums
+	 * @param target
+	 * @return
+	 */
+	int len = 0;
+	public List<List<Integer>> fourSum2(int[] nums, int target) {
+		if (nums==null||nums.length<=0) {
+			return Collections.emptyList();
+		}
+		len = nums.length;
+		//sort 不能放在递归函数中
+		Arrays.sort(nums);
+		return kSum(nums,4,target,0);
+	}
  
+	public List<List<Integer>> kSum(int[]nums,int k, int target,int index){
+		if (k<0) {
+			return Collections.emptyList();
+		}
+		List<List<Integer>> result = new ArrayList<>();
+		if (k==1) {
+			return oneSum(nums, target);
+		}
+		if (k==2) {
+			return twoSum4(nums, target,index);
+		}else {
+			//不用if(k>2)减少一次判断
+		
+											//减少轮次，类似于植树问题，数组里后边的数字数量不够，i就不用继续自增
+			for (int i = index; i < len-k+1; i++) {
+				//在这加，0000的test过不去
+//				if (i==0||i>index+1&&nums[i]!=nums[i-1]) {
+					
+					int temp=target-nums[i];
+					List<List<Integer>> subResult=kSum(nums, k-1, temp,i+1);
+					if (subResult.size()>0) {
+						for (int j = 0; j < subResult.size(); j++) {
+							List<Integer> sublist=subResult.get(j);
+							sublist.add(nums[i]);
+//							result.add(sublist);
+						}
+						result.addAll(subResult);
+					}
+//				}
+				//判断在后边，所以得和后一个比较，所以不能加i>0这样的判断
+				while(i<len-1&&nums[i]==nums[i+1]){
+					i++;
+				}
+			}
+		}
+		return result;
+	}
+	
+	public List<List<Integer>> twoSum4(int[] nums, int target,int index){
+		int left=index;int right=len-1;
+		List<List<Integer>> result = new ArrayList<>();
+		while(left<right){
+			//只在下边加过滤就行
+//			if (left==0||left>0&&nums[left]!=nums[left-1]) {
+				
+				int temp=nums[left]+nums[right];
+				if (temp>target) {
+					right--;
+				}else if (temp<target) {
+					left++;
+				}else {
+					List<Integer> list=new ArrayList<>();
+					list.add(nums[left]);
+					list.add(nums[right]);
+					result.add(list);
+					while(left<right&&nums[left]==nums[left+1]){
+						left++;
+					}
+					while(left<right&&nums[right]==nums[right-1]){
+						right--;
+					}
+					left++;
+					right--;
+				}
+//			}else {
+//				left++;
+//			}
+			
+		}
+		return result;
+	}
+	public List<List<Integer>> oneSum(int[] nums, int target){
+		
+		List<List<Integer>> result = new ArrayList<>();
+		for (int i = 0; i < len; i++) {
+			if (nums[i]==target&&(i==0||nums[i]!=nums[i-1])) {
+				result.add(Arrays.asList(nums[i]));
+			}
+		}
+		return result;
+	}
 	public static void main(String[] args) {
 		NSum solution=new NSum();
 		int[] nums1={0, 0, 0,0};
@@ -392,6 +501,12 @@ public class NSum {
 //		System.out.println(result);
 		
 		int []nums2={1, 0, -1, 0, -2, 2};
-		System.out.println(solution.fourSum(nums2, 0));;
+		System.out.println(solution.fourSum2(nums2, 0));;
+		
+		/*List<Integer> temp = new ArrayList<>();
+		for (int i = 0; i < nums1.length; i++) {
+			temp.add(0,nums1[i]);
+		}
+		System.out.println(temp);*/
 	}
 }
