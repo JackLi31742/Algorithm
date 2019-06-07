@@ -33,9 +33,7 @@ public class Solution {
 	 * 
 	 */
     
-    /**
-     * 排序
-     */
+    //排序
 	public static int missingNumber(int[] nums) {
 		Arrays.sort(nums);
 
