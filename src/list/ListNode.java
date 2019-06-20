@@ -8,16 +8,8 @@ public class ListNode {
 		val = x;
 	}
 
+
 	
-	
-	public ListNode(int val, ListNode next) {
-		super();
-		this.val = val;
-		this.next = next;
-	}
-
-
-
 	public ListNode() {
 		super();
 		// TODO Auto-generated constructor stub

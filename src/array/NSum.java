@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.org.apache.xml.internal.security.algorithms.implementations.IntegrityHmac;
-
+/**
+ * 2sum，将问题转换为从数组查找target-num[i]是否存在，所以才会使用hashmap以及如果array是sort的，用双指针去查找
+ * @author LANG
+ *
+ */
 public class NSum {
 
 	/**
