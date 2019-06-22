@@ -35,16 +35,21 @@ public class Reverse {
 	 * @return
 	 */
 	public ListNode reverseBetween(ListNode head, int m, int n) {
-        ListNode cur=head;ListNode pre=null;
+		if (head==null||head.next==null||n==1) {
+			return head;
+		}
+        ListNode cur=head;ListNode pre=null;ListNode preCur=null;ListNode tail=null;
         int step=1;
+        
         while(step<m){
         	pre=cur;
         	cur=cur.next;
         	step++;
         }
-//        if (pre!=null) {
-			
-        	ListNode preCur=cur;
+        	//标记要反转的第一个节点，即反转后的最后一个节点
+        	//原来是用pre.next，但如果pre是null，反转后的最后一个节点的下一个节点将会丢失，而且分情况讨论，也很复杂
+			tail=cur;
+        	preCur=cur;
         	cur=cur.next;
         	while(step<n){
         		ListNode temp=cur.next;
@@ -53,29 +58,16 @@ public class Reverse {
         		cur=temp;
         		step++;
         	}
-        	pre.next.next=cur;
-        	pre.next=preCur;
-//		}
-//        else {
-//			while(step<n){
-//				ListNode temp=cur.next;
-//				cur.next=pre;
-//				pre=cur;
-//				cur=temp;
-//				step++;
-//			}
-//			if (cur.next!=null&&pre!=null) {
-//				
-//				pre.next=cur.next;
-//				cur.next=pre;
-//				return cur;
-//			}else {
-//				cur.next=pre;
-//				return cur;
-//			}
-//		}
+        	//原来是pre.next.next=cur
+        	tail.next=cur;
+        	if (pre!=null) {
+				
+        		pre.next=preCur;
+        		return head;
+			}
+
         
-        return head;
+        return preCur;
     }
 	
 	/**
@@ -88,22 +80,90 @@ public class Reverse {
 	 */
 	
 	public ListNode swapPairs(ListNode head) {
+        if (head==null||head.next==null) {
+			return head;
+		}
         
+        ListNode first=head;ListNode second=first.next;
+        ListNode newHead=second;
+        while(first!=null&&second!=null){
+        	ListNode temp=second.next;
+        	second.next=first;
+        	//奇数情况
+        	//看后续是否只剩一个节点
+        	if (temp!=null&&temp.next!=null) {
+				first.next=temp.next;
+			}else {
+				first.next=temp;
+			}
+        	first=temp;
+        	//偶数情况，temp就是null，first也是null，需要判断
+        	if (first!=null) {
+				
+        		second=first.next;
+			}
+        	
+        }
+        
+        return newHead;
     }
 
+	/**
+	 * 25. Reverse Nodes in k-Group
+	 * Given this linked list: 1->2->3->4->5
+
+		For k = 2, you should return: 2->1->4->3->5
+
+		For k = 3, you should return: 3->2->1->4->5
+		
+		虽然是递归，但时间复杂度依然是O(N)，因为递归走的是后边的节点
+	 * LANG
+	 * @param head
+	 * @param k
+	 * @return
+	 */
+	public ListNode reverseKGroup(ListNode head, int k) {
+        if (head==null||k==1) {
+			return head;
+		}
+        int count=1;
+        ListNode newHead=head;
+        while(newHead!=null&&count<k){
+        	newHead=newHead.next;
+        	count++;
+        }
+        if (count==k&&newHead!=null) {
+			ListNode temp=newHead.next;
+			ListNode tail=head;
+			ListNode cur=head;
+			ListNode pre=null;
+			while(cur!=temp){
+				ListNode next=cur.next;
+				cur.next=pre;
+				pre=cur;
+				cur=next;
+			}
+			tail.next=reverseKGroup(temp, k);
+			return newHead;
+		}
+        
+        return head;
+    }
+
+	
 	public static void main(String[] args) {
 		ListNode l1=new ListNode(1);
-		ListNode l2=new ListNode(4);
-		ListNode l3=new ListNode(5);
-//		ListNode l4=new ListNode(1);
-//		ListNode l5=new ListNode(3);
+		ListNode l2=new ListNode(2);
+		ListNode l3=new ListNode(3);
+		ListNode l4=new ListNode(4);
+		ListNode l5=new ListNode(5);
 //		ListNode l6=new ListNode(4);
 		l1.next=l2;
 		l2.next=l3;
-//		l3.next=l4;
-//		l4.next=l5;
+		l3.next=l4;
+		l4.next=l5;
 //		l5.next=l6;
 		Reverse reverse=new Reverse();
-		System.out.println(reverse.reverseBetween(l1,1,3));;
+		System.out.println(reverse.reverseKGroup(l1,2));;
 	}
 }
