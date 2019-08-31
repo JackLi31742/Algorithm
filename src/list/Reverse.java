@@ -12,6 +12,8 @@ public class Reverse {
 	 */
 	public ListNode reverseList(ListNode head) {
 		
+		//哨兵节点，不应该指向头，应该指向头的左边，
+		//而且不需要判断链表是否为null，以及是否只有1个节点，循环都可以做到pre是新列表的头
         ListNode pre=null;
         while(head!=null){
         	ListNode temp=head.next;
