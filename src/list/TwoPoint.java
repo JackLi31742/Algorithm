@@ -248,7 +248,7 @@ public class TwoPoint {
 		if (n>0) {
 			return head;
 		}
-		
+		//哨兵是减少了判断操作，其余的不变
 		while(first.next!=null) {
 			first=first.next;
 			second=second.next;
@@ -266,8 +266,16 @@ public class TwoPoint {
 	 * 如果节点个数是双数，返回第二个节点
 	 */
 	public ListNode middleNode(ListNode head) {
+		if(head==null||head.next==null){
+			return head;
+		}
         ListNode fast=head;
         ListNode slow =head;
+        while(fast!=null&&fast.next!=null&&slow!=null){
+        	fast=fast.next.next;
+        	slow=slow.next;
+        }
+        return slow;
     }
 	public static void main(String[] args) {
 		ListNode l1=new ListNode(1);
@@ -275,13 +283,15 @@ public class TwoPoint {
 		ListNode l3=new ListNode(3);
 		ListNode l4=new ListNode(4);
 		ListNode l5=new ListNode(5);
+		ListNode l6=new ListNode(6);
 		l1.next=l2;
 		l2.next=l3;
 		l3.next=l4;
 		l4.next=l5;
+		l5.next=l6;
 		TwoPoint twoPoint=new TwoPoint();
 //		System.out.println(twoPoint.detectCycle2(l1));
-		System.out.println(twoPoint.removeNthFromEnd3(l1, 2));
+		System.out.println(twoPoint.middleNode(l1));
 	}
 
 }
