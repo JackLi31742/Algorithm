@@ -1,6 +1,7 @@
 package design;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 /**
  * 155. Min Stack
@@ -15,7 +16,133 @@ import java.util.Arrays;
  * @author LANG
  *
  */
-public class MinStack {
+
+//列表头插法，模拟栈；每个节点保存到该节点为止的最小值
+public class MinStack{
+	
+	private Node head;
+	public MinStack() {
+		head=new Node(0,null,Integer.MAX_VALUE);
+	}
+	
+	public void push(int x) {
+		Node node=new Node(x,head,Math.min(x, head.min));
+		//移动指针
+		head=node;
+	}
+	
+	public void pop() {
+		head=head.next;
+	}
+	
+	public int top() {
+		return head.value;
+    }
+    
+	public int getMin() {
+		return head.min;
+    }
+	
+	private static class Node{
+		int value;
+		Node next;
+		int min;
+		public Node(int value, Node next, int min) {
+			super();
+			this.value = value;
+			this.next = next;
+			this.min = min;
+		}
+		
+		@Override
+		public String toString() {
+			return "Node [value=" + value + ", next=" + next + ", min=" + min + "]";
+		}
+		
+		
+	}
+	
+	public static void main(String[] args) {
+		MinStack obj=new MinStack();
+		obj.push(2);
+		obj.push(0);
+		obj.push(3);
+		obj.push(0);
+		
+		obj.getMin();
+		obj.pop();
+		obj.getMin();
+		obj.pop();
+		obj.getMin();
+		obj.pop();
+		obj.getMin();
+	}
+}
+
+/*
+ * LinkedList中的push，是addFirst，pop和peek也是操作的第一个元素
+ * 
+ */
+
+
+class MinStack3{
+	
+	private LinkedList<Integer> stack;
+	
+	private LinkedList<Integer> min;
+	public MinStack3() {
+        stack=new LinkedList<>();
+        min=new LinkedList<>();
+    }
+    
+	public void push(int x) {
+        stack.push(x);
+        if (min.size()==0) {
+			
+        	min.add(x);
+		}else {
+			int pos=-1;
+			for (int i = 0; i < min.size(); i++) {
+				if (min.get(i)<x) {
+					pos=i;
+					break;
+				}
+			}
+			if (pos==-1) {
+				pos=min.size();
+			}
+			min.add(pos, x);
+		}
+    }
+    
+	public void pop() {
+//		int pos=0;
+//		for (int i = 0; i < min.size(); i++) {
+//			
+//			if (min.get(i).equals(stack.peek())) {
+//				pos=i;
+//				break;
+//			}
+//		}
+//		min.remove(pos);
+		min.remove(stack.peek());
+        stack.pop();
+        
+    }
+    
+	public int top() {
+        return stack.peek();
+    }
+    
+	public int getMin() {
+        return min.peekLast();
+    }
+	
+	
+}
+
+
+class MinStack2 {
 
 	//最小值数组
 	private int[] min;
@@ -26,7 +153,7 @@ public class MinStack {
 	private int length;
 	//栈内元素的个数
 	private int count;
-    public MinStack() {
+    public MinStack2() {
     	this.length=8;
         this.arr=new int[length];
         this.count=0;
@@ -100,14 +227,5 @@ public class MinStack {
         return min[count-1];
     }
     
-    public static void main(String[] args) {
-    	MinStack obj = new MinStack();
-    	obj.push(-124);
-    	obj.push(-164);
-    	obj.push(-197);
-    	obj.push(-24);
-    	
-    	
-    	
-	}
+    
 }
