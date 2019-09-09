@@ -204,13 +204,14 @@ public class Solution {
         int result=0;
         LinkedList<Integer> stack=new LinkedList<>();
         for (int i = 0; i < ops.length; i++) {
-			if (ops[i]=="C") {
+        	//String 判断相等用equals
+			if (ops[i].equals("C")) {
 				if (!stack.isEmpty()) {
 					stack.pop();
 				}
-			}else if (ops[i]=="D") {
+			}else if (ops[i].equals("D")) {
 				stack.push(stack.peek()*2);
-			}else if (ops[i]=="+") {
+			}else if (ops[i].equals("+")) {
 				int temp1=stack.pop();
 				int temp2=stack.peek();
 				stack.push(temp1);
@@ -232,6 +233,105 @@ public class Solution {
         return result;
     }
 
+	
+	/**
+	 * 496. Next Greater Element I
+	 * nums1是nums2的子集，遍历nums1，在nums2中找到第一个比这个数字大的，找不到返回-1
+	 * @param nums1
+	 * @param nums2
+	 * @return
+	 */
+	public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        int [] result=new int[nums1.length];
+        for (int i = 0; i < nums1.length; i++) {
+        	boolean flag=false;
+			for (int j = 0; j < nums2.length; j++) {
+				if (nums2[j]==nums1[i]) {
+					if (j==nums2.length-1) {
+						result[i]=-1;
+						break;
+					}
+					flag=true;
+				}
+				if (flag) {
+					//这样会使得j多加很多次  
+//					j++;
+//					if (j<nums2.length) {
+						if (nums2[j]==nums1[i]) {
+							continue;
+						}
+						if (nums2[j]>nums1[i]) {
+							result[i]=nums2[j];
+							break;
+						}else {
+							result[i]=-1;
+						}
+//					}else {
+//						result[i]=-1;
+//					}
+				}
+			}
+		}
+        
+        return result;
+    }
+
+	/**
+	   *  找到index，再去遍历nums2，减少判断次数
+	 */
+	public int[] nextGreaterElement2(int[] nums1, int[] nums2) {
+		int [] result=new int[nums1.length];
+		
+		for (int i = 0; i < nums1.length; i++) {
+			int greater=-1;
+			int index=findIndex(nums1[i],nums2);
+			for (int j = index+1; j < nums2.length; j++) {
+				if (nums2[j]>nums1[i]) {
+					greater=nums2[j];
+					break;
+				}
+			}
+			result[i]=greater;
+		}
+		return result;
+	}
+	
+	public int findIndex(int num,int[]nums2) {
+		for (int i = 0; i < nums2.length; i++) {
+			if (nums2[i]==num) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * 503. Next Greater Element II
+	 * 数组的最后一个元素的下一个元素是数组的第一个元素，意思是数组是环形队列
+	 * @param nums
+	 * @return
+	 */
+	public int[] nextGreaterElements(int[] nums) {
+		if (nums==null||nums.length==0) {
+			return null;
+		}
+		if (nums.length==1) {
+			return new int[] {-1};
+		}
+		int len=nums.length;
+		int front=0;int rear=len-1;
+		int[] result=new int[len];
+		for (int i = 0; i < len; i++) {
+			int greater=-1;
+			if (nums[i+1]>nums[i]) {
+				greater=nums[i+1];
+			}
+			result[i]=greater;
+		}
+		
+		return result;
+	}
+	
 	public static void main(String[] args) {
 		Solution so=new Solution();
 		String S="ab#c";
@@ -239,12 +339,17 @@ public class Solution {
 //		System.out.println(so.backspaceCompare2(S, T));;
 		
 		String []ops={"5","2","C","D","+"};
-		System.out.println(so.calPoints(ops));;
+//		System.out.println(so.calPoints(ops));;
 //		System.out.println((int)'(');
 //		System.out.println((int)')');
 //		System.out.println((int)'+');
 //		System.out.println((int)'-');
 //		System.out.println((int)'*');
 //		System.out.println((int)'/');
+		int[] nums1= {4,1,2};
+		int[] nums2= {1,3,4,2};
+//		so.nextGreaterElement(nums1, nums2);
+		
+		System.out.println(new int[]{-1,2});
 	}
 }
