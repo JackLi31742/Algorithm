@@ -190,7 +190,7 @@ public class Solution {
 			numStack.push((int)arr[i]);
 		}
         
-        return result;
+//        return result;
     }
 
 	
@@ -306,25 +306,42 @@ public class Solution {
 	}
 	
 	/**
+	 * 用map映射num和index的关系
+	 * LANG
+	 * @param nums1
+	 * @param nums2
+	 * @return
+	 */
+	public int[] nextGreaterElement3(int[] nums1, int[] nums2) {
+		
+	}
+	/**
 	 * 503. Next Greater Element II
 	 * 数组的最后一个元素的下一个元素是数组的第一个元素，意思是数组是环形队列
 	 * @param nums
 	 * @return
 	 */
 	public int[] nextGreaterElements(int[] nums) {
-		if (nums==null||nums.length==0) {
+		if (nums==null) {
 			return null;
+		}
+		if (nums.length==0) {
+			return new int[] {};
 		}
 		if (nums.length==1) {
 			return new int[] {-1};
 		}
 		int len=nums.length;
-		int front=0;int rear=len-1;
 		int[] result=new int[len];
 		for (int i = 0; i < len; i++) {
 			int greater=-1;
-			if (nums[i+1]>nums[i]) {
-				greater=nums[i+1];
+								//终止条件，当j累加到再次等于i时，跳出循环，所以每次进行时，是不等于
+			for (int j = i+1; (j %len)!=i; j++) {
+				
+				if (nums[j%len]>nums[i]) {
+					greater=nums[j%len];
+					break;
+				}
 			}
 			result[i]=greater;
 		}
@@ -346,10 +363,10 @@ public class Solution {
 //		System.out.println((int)'-');
 //		System.out.println((int)'*');
 //		System.out.println((int)'/');
-		int[] nums1= {4,1,2};
-		int[] nums2= {1,3,4,2};
-//		so.nextGreaterElement(nums1, nums2);
+		int[] nums1= {1,2,1};
+//		int[] nums2= {1,3,4,2};
+		so.nextGreaterElements(nums1);
 		
-		System.out.println(new int[]{-1,2});
+//		System.out.println(new int[]{-1,2});
 	}
 }
