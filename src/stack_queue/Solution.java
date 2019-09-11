@@ -313,7 +313,13 @@ public class Solution {
 	 * @return
 	 */
 	public int[] nextGreaterElement3(int[] nums1, int[] nums2) {
-		
+		Map<Integer, Integer> map=new HashMap<>();
+		for (int i = 0; i < nums2.length; i++) {
+			map.put(nums2[i], i);
+		}
+		for (int i = 0; i < nums1.length; i++) {
+			map.get(nums1[i]);
+		}
 	}
 	/**
 	 * 503. Next Greater Element II
