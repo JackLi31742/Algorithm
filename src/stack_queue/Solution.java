@@ -1,8 +1,10 @@
 package stack_queue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * stack 继承自Vector，是synchronized的，顺序栈
@@ -236,6 +238,7 @@ public class Solution {
 	
 	/**
 	 * 496. Next Greater Element I
+	 * 1206. Next Greater Element I
 	 * nums1是nums2的子集，遍历nums1，在nums2中找到第一个比这个数字大的，找不到返回-1
 	 * @param nums1
 	 * @param nums2
@@ -306,6 +309,23 @@ public class Solution {
 	}
 	
 	/**
+	 * 单调栈
+	 * LANG
+	 */
+	public int[] monotonicStack(int[] nums){
+		int[] result=new int[nums.length];
+		LinkedList<Integer> stack=new LinkedList<>();
+		for (int i = nums.length-1; i >=0; i--) {
+			while(!stack.isEmpty()&&stack.peek()<nums[i]){
+				stack.pop();
+			}
+			result[i]=stack.isEmpty()?-1:stack.pop();
+			stack.push(nums[i]);
+		}
+		System.out.println(stack.toString());
+		return result;
+	}
+	/**
 	 * 用map映射num和index的关系
 	 * LANG
 	 * @param nums1
@@ -313,16 +333,31 @@ public class Solution {
 	 * @return
 	 */
 	public int[] nextGreaterElement3(int[] nums1, int[] nums2) {
-		Map<Integer, Integer> map=new HashMap<>();
-		for (int i = 0; i < nums2.length; i++) {
-			map.put(nums2[i], i);
-		}
-		for (int i = 0; i < nums1.length; i++) {
-			map.get(nums1[i]);
-		}
+		Stack<Integer> stack = new Stack<Integer>();
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+        
+        int[] result = new int[nums1.length];
+        
+        for(int num : nums2) {
+        	//找到第一个大于栈顶元素的，就弹出该元素，放入map中，对于找不到的，在下一个for循环中，赋值-1
+        	//while循环不能改成if，因为和单调栈不一样，pop不一定会发生
+            while(!stack.isEmpty() && stack.peek()<num){
+                map.put(stack.pop(), num);
+            }
+            stack.push(num);
+        }
+        
+        for(int i = 0; i < nums1.length; i++) {
+        	result[i] = map.getOrDefault(nums1[i], -1);
+        }
+            
+        return result;
 	}
+	
+	
 	/**
 	 * 503. Next Greater Element II
+	 * 1201. Next Greater Element II
 	 * 数组的最后一个元素的下一个元素是数组的第一个元素，意思是数组是环形队列
 	 * @param nums
 	 * @return
@@ -355,6 +390,38 @@ public class Solution {
 		return result;
 	}
 	
+	/**
+	 * 没明白逻辑
+	 * LANG
+	 * @param nums
+	 * @return
+	 */
+	public int[] nextGreaterElements2(int[] nums) {
+		if (nums==null) {
+			return null;
+		}
+		if (nums.length==0) {
+			return new int[] {};
+		}
+		if (nums.length==1) {
+			return new int[] {-1};
+		}
+		int len=nums.length;
+		int[] result=new int[len];
+		Arrays.fill(result, -1);
+		LinkedList<Integer> stack=new LinkedList<>();
+		
+		for (int i = 0; i < len * 2; i++) {
+            int num = nums[i % len]; 
+            while (!stack.isEmpty() && nums[stack.peek()] < num){
+                result[stack.pop()] = num;
+            }
+            if (i < len) {
+            	stack.push(i);
+            }
+        }   
+		return result;
+	}
 	public static void main(String[] args) {
 		Solution so=new Solution();
 		String S="ab#c";
@@ -369,9 +436,14 @@ public class Solution {
 //		System.out.println((int)'-');
 //		System.out.println((int)'*');
 //		System.out.println((int)'/');
-		int[] nums1= {1,2,1};
-//		int[] nums2= {1,3,4,2};
-		so.nextGreaterElements(nums1);
+		int[] nums1= {1,3,5,2,4};
+		int[] nums2= {1,2,1};
+//		so.nextGreaterElements(nums1);
+//		so.nextGreaterElement3(nums1, nums2);
+		int []result=so.nextGreaterElements2(nums2);
+		for (int i = 0; i < result.length; i++) {
+			System.out.println(result[i]);
+		}
 		
 //		System.out.println(new int[]{-1,2});
 	}

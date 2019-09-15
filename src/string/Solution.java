@@ -11,6 +11,21 @@ import java.util.Set;
 import java.util.Stack;
 
 public class Solution {
+	
+	/**
+	 * 556. 下一个更大元素 III
+	 * 找出用给定的整数n的每一位组成的其他最小正整数
+	 * LANG
+	 * @param n
+	 * @return
+	 */
+	public int nextGreaterElement(int n) {
+        if (n<=10) {
+			return -1;
+		}
+       char[]arr= String.valueOf(n).toCharArray();
+       
+    }
 
 	/**
 	 * 反转字符串
