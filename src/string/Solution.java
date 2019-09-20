@@ -20,12 +20,39 @@ public class Solution {
 	 * @return
 	 */
 	public int nextGreaterElement(int n) {
-        if (n<=10) {
-			return -1;
-		}
-       char[]arr= String.valueOf(n).toCharArray();
        
+       String s=String.valueOf(n);
+       char[]arr= s.toCharArray();
+       boolean flag=false;
+       for (int i = arr.length-1; i >0; i--) {
+    	   if (arr[i-1]<arr[i]) {
+    		   flag=true;
+    		   int temp=i;
+    		   for (int j = i+1; j < arr.length; j++) {
+    			   		//必须在arr[j]>arr[i-1]的前提下
+    			   if (arr[j]>arr[i-1]&&arr[j]<arr[temp]) {
+    				   temp=j;
+    			   }
+    		   }
+    		   swip(arr, i-1, temp);
+    		   //包含左边界，不包含右边界
+    		   Arrays.sort(arr,i,arr.length);
+    		   break;
+    	   }
+       }
+       Long result=Long.parseLong(String.valueOf(arr));
+       if (flag&&result<=Integer.MAX_VALUE) {
+    	   return result.intValue();
+       }else {
+    	   return -1;
+       }
     }
+	
+	public void swip(char[]arr,int x,int y) {
+		char temp=arr[x];
+		arr[x]=arr[y];
+		arr[y]=temp;
+	}
 
 	/**
 	 * 反转字符串
@@ -813,8 +840,9 @@ https://blog.csdn.net/sinat_35261315/article/details/78267046
 //	    	System.out.println(mostCommonWord(s,banned));;
 	    	
 	    	
-	    	
-	    	
+	    	int a=241;
+	    	Solution solution=new Solution();
+	    	solution.nextGreaterElement(a);
 	    	
 //	    	System.out.println(KSubstring("", 28));;
 	    	System.out.println((int)'a');
