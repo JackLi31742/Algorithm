@@ -169,32 +169,50 @@ public class Solution {
         char [] arr=s.toCharArray();
         LinkedList<Integer> numStack=new LinkedList<>();
         LinkedList<Character> opStack=new LinkedList<>();
-        Map<Character, Integer> level=new HashMap<>();
-        level.put('(', 2);
-        level.put(')', 3);
-        level.put('+', 1);
-        level.put('-', 1);
+        Map<Character, Character> level=new HashMap<>();
+        level.put(')', '(');
         int result=0;
         for (int i = 0; i < arr.length; i++) {
         	if (arr[i]==' ') {
 				continue;
 			}
         	
-			if (arr[i]=='('||arr[i]==')'||arr[i]=='+'||arr[i]=='-') {
-				if (!opStack.isEmpty()) {
-					if (level.get(arr[i])>level.get(opStack.peek())) {
-						
-					}
-				}
+			if (arr[i]=='('||arr[i]=='+'||arr[i]=='-') {
 				opStack.push(arr[i]);
+			}else if (arr[i]==')') {
+				if (!opStack.isEmpty()) {
+
+					while(opStack.peek()!='('){
+						result+=getResult(numStack, opStack, result);
+					}
+				}else {
+					System.out.println("非法字符");
+				}
+				
+			}else {
+				
+				numStack.push((int)arr[i]-48);
 			}
 			
-			numStack.push((int)arr[i]);
 		}
-        
-//        return result;
+        while(!opStack.isEmpty()||!numStack.isEmpty()){
+        	result+=getResult(numStack, opStack, result);
+        }
+        return result;
     }
 
+	
+	public int getResult(LinkedList<Integer> numStack,LinkedList<Character> opStack,int result){
+		int right=numStack.pop();
+		int left=numStack.pop();
+		if (opStack.pop()=='+') {
+			result+=left+right;
+		}else if (opStack.pop()=='-') {
+			result+=left-right;
+		}
+		
+		return result;
+	}
 	
 	/**
 	 * 682. 棒球比赛
@@ -442,8 +460,12 @@ public class Solution {
 //		so.nextGreaterElement3(nums1, nums2);
 		int []result=so.nextGreaterElements2(nums2);
 		for (int i = 0; i < result.length; i++) {
-			System.out.println(result[i]);
+//			System.out.println(result[i]);
 		}
+		
+		String s=" 2-1 + 2 ";
+		
+		System.out.println(so.calculate(s));;
 		
 //		System.out.println(new int[]{-1,2});
 	}
